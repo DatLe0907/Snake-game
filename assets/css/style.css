@@ -48,19 +48,21 @@ body {
 }
 
 .snake-box {
-  width: 65vmin;
-  height: 74vmin;
+  width: 80vmin;
+  height: 80vmin;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   border-radius: 5px;
-  background: #a5d435;
   box-shadow: 0 20px 40px rgba(52, 87, 220, 0.2);
+  background-color: #658738;
 }
 
 .box__detail {
-  background-color: #05143b66;
+  background-color: #658738;
+  width: 100%;
   color: #fff;
   font-weight: 500;
   font-size: 1.2rem;
@@ -76,12 +78,11 @@ body {
 
 .box__game {
   height: 100%;
-  width: 100%;
+  width: 87%;
   display: grid;
   grid-template: repeat(30, 1fr) / repeat(30, 1fr);
-  border-width: 10px;
-  border-style: solid;
-  border-color: #658738 rgb(157, 52, 52) rgb(157, 52, 52) rgb(157, 52, 52);
+  border: 10px solid #b22735;
+  background: #a5d435;
 }
 
 .rock{
@@ -100,12 +101,12 @@ body {
   width: 100%;
   height: 100%;
   background-color: #ff4355;
-  box-shadow: inset 0.2em -0.2em #cc1022;
-  border-radius: 2em 2em 3em 3em;
+  box-shadow: inset 0.15em -0.1em #cc1022;
+  border-radius: 3em;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 3;
+  z-index: 1;
 }
 
 .apple:before {
@@ -118,7 +119,6 @@ body {
   background-color: greenyellow;
   border-top-right-radius: 40%;
   border-bottom-left-radius: 40%;
-  z-index: 2;
 }
 
 .apple:after {
@@ -127,7 +127,6 @@ body {
   height: 4px;
   background-color: brown;
   position: absolute;
-  z-index: 2;
   top: -4px;
   left: 6px;
   z-index: 1;
@@ -145,6 +144,7 @@ body {
 .game__snake {
   transition: 0.4s;
   background-color: #ffff00;
+  z-index: 4;
 }
 
 .game__snake:last-child {
@@ -265,11 +265,19 @@ body {
 
 
 /* Pc */
-@media (min-width: 64em) {
+@media (min-width: 1024px) {
 }
 
 /* Tablet */
-@media (min-width: 46.25em) and (max-width: 63.9375em) {
+@media (min-width: 740px) and (max-width: 1023px) {
+    .heading {
+        display: none;
+    }
+    .snake-box {
+        width: 65vmin;
+        height: 65vmin;
+    }
+
   .control {
     display: flex;
   }
@@ -289,26 +297,12 @@ body {
     margin: auto 10px 10px auto;
   }
 
-  .apple:before {
-    top: -4px;
-    left: 2px;
-  }
-
-  .apple:after {
-    width: 2px;
-    height: 4px;
-    top: -4px;
-    left: 6px;
-  }
 }
 
 /* Mobile */
-@media (max-width: 46.1875em) {
-    .snake-box {     
-  width: 85vmin;
-  height: 90vmin;
-  padding: 0;
-  margin: 0;
+@media (max-width: 739px) {
+    .heading {
+        display: none;
     }
     .control {
         display: flex;
