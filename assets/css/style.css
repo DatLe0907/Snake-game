@@ -49,7 +49,7 @@ body {
 
 .snake-box {
   width: 65vmin;
-  height: 70vmin;
+  height: 74vmin;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -71,6 +71,7 @@ body {
 
 .box__detail h4 {
   font-size: 2rem;
+  word-wrap: break-word;
 }
 
 .box__game {
@@ -78,6 +79,9 @@ body {
   width: 100%;
   display: grid;
   grid-template: repeat(30, 1fr) / repeat(30, 1fr);
+  border-width: 10px;
+  border-style: solid;
+  border-color: #658738 rgb(157, 52, 52) rgb(157, 52, 52) rgb(157, 52, 52);
 }
 
 .rock{
@@ -300,6 +304,12 @@ body {
 
 /* Mobile */
 @media (max-width: 46.1875em) {
+    .snake-box {     
+  width: 85vmin;
+  height: 90vmin;
+  padding: 0;
+  margin: 0;
+    }
     .control {
         display: flex;
       }

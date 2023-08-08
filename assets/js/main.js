@@ -2,17 +2,12 @@ const boxGame = document.querySelector('.box__game')
 const scoreElement = document.querySelector('.heading__current-score')
 const highScoreElement = document.querySelector('.heading__high-score');
 const scoreModal = document.querySelector('.score');
-const highScoreModal = document.querySelector('.high-score');
+let highScoreModal = document.querySelector('.high-score');
 const replayBtn = document.querySelector('.modal__content button');
 const controlBtn = document.querySelectorAll('.control button');
 const audioEatingApple = new Audio('./assets/audio/biting-into-an-apple.mp3');
 const audioHurt = new Audio('./assets/audio/umph.mp3');
 const themeSong = new Audio('./assets/audio/Snake Game - Theme Song.mp3');
-
-document.addEventListener('onloadend',function(e){
-    themeSong.play()
-})
-
 
 let snakeX = 15, snakeY = 15;
 let randomArr = [1,-1]
@@ -20,19 +15,8 @@ let foodX = snakeX + randomArr[Math.floor(Math.random() * randomArr.length)],
 foodY = snakeY + randomArr[Math.floor(Math.random() * randomArr.length)];
 let velocityX = 0, velocityY = 0;
 let rockX,rockY;
-let rockList = []
-function randomRock(){
-    for(let i =0; i<4;i++){
-        rockX = Math.floor(Math.random() * 30 + 1);
-        rockY = Math.floor(Math.random() * 30 + 1);
-        rockList.push([rockX,rockY]);
-        if((rockX === snakeX && rockY === snakeY)|| (rockX === foodX && rockY === foodY)){
-        randomRock()
-    }
-    }
-}
+let rockList = [];
 
-randomRock();
 
 let speed = 100;
 let snakeBody = [];
@@ -45,9 +29,19 @@ let highScore = localStorage.getItem("heading__high-score") || 0;
     highScoreModal.innerText = `High Score: ${highScore}`
 
 
-const randomFoodPosition = ()=> {
-    foodX = Math.floor(Math.random() * 30) + 1;
-    foodY = Math.floor(Math.random() * 30) + 1;
+    
+
+
+randomRock();
+
+
+
+function randomRock(){
+    for(let i =0; i< 10;i++){
+        rockX = Math.floor(Math.random() * 30 + 1);
+        rockY = Math.floor(Math.random() * 30 + 1);
+        rockList.push([rockX,rockY]);
+    }
 }
 
 const handleGameOver = () => {
@@ -65,15 +59,28 @@ const handleGameOver = () => {
     }
 }
 
+let htmlMarkup;
+
+const randomFoodPosition = ()=> {
+    foodX = Math.floor(Math.random() * 30) + 1;
+    foodY = Math.floor(Math.random() * 30) + 1;
+    rockList.forEach(rock => {
+        if(foodX !== rock[0], foodY !== rock[1]){
+            return htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`
+        }
+        else{
+            randomFoodPosition();
+        }
+    })
+}
+
 const initGame = () => {
     if(gameOver){
         handleGameOver();
     }
-    let htmlMarkup = `
-        <div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>
-    `
-    htmlMarkup+=rockList.map(function(rock){
-       return ` <div class = 'rock' style = 'grid-area: ${rock[1]} / ${rock[0]}'></div>`
+    let htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`
+    rockList.forEach(function(rock){
+        htmlMarkup+= ` <div class = 'rock' style = 'grid-area: ${rock[1]} / ${rock[0]}'></div>`
     })
     
 
@@ -94,9 +101,16 @@ const initGame = () => {
         scoreElement.innerText = `Score: ${score}`;
         highScoreElement.innerText = `High Score: ${highScore}`;
         scoreModal.innerText = `Score: ${score}`;
-        highScoreModal = `High Score: ${highScore}`;
+        highScoreModal.innerText = `High Score: ${highScore}`;
     }
 
+    rockList.join('');
+    rockList.forEach(function(rock){
+        if(snakeX === rock[0] && snakeY === rock[1]){
+            audioHurt.play();
+            gameOver = true;
+        }
+    })
 
     // update snake head position
     snakeX = snakeX + velocityX;
@@ -123,12 +137,7 @@ const initGame = () => {
     
         gameOver = true;
     }
-    rockList.forEach(function(rock){
-        if(snakeX === rock[0] && snakeY === rock[1]){
-            audioHurt.play();
-            gameOver = true;
-        }
-    })
+
 
     boxGame.innerHTML = htmlMarkup;
     let snakeLength = document.querySelectorAll('.game__snake');
