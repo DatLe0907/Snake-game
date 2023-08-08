@@ -26,7 +26,6 @@ function randomRock(){
         rockX = Math.floor(Math.random() * 30 + 1);
         rockY = Math.floor(Math.random() * 30 + 1);
         rockList.push([rockX,rockY]);
-        console.log(rockList)
         if((rockX === snakeX && rockY === snakeY)|| (rockX === foodX && rockY === foodY)){
         randomRock()
     }
@@ -49,9 +48,6 @@ let highScore = localStorage.getItem("heading__high-score") || 0;
 const randomFoodPosition = ()=> {
     foodX = Math.floor(Math.random() * 30) + 1;
     foodY = Math.floor(Math.random() * 30) + 1;
-    if((foodX === snakeX && foodY === snakeY)|| (foodX === foodX && foodY === foodY)){
-        randomFoodPosition()
-    }
 }
 
 const handleGameOver = () => {
@@ -128,7 +124,6 @@ const initGame = () => {
         gameOver = true;
     }
     rockList.forEach(function(rock){
-        console.log(rock[1], rock[0])
         if(snakeX === rock[0] && snakeY === rock[1]){
             audioHurt.play();
             gameOver = true;
