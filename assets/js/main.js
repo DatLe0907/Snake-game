@@ -5,20 +5,20 @@ const scoreModal = document.querySelector(".score");
 const highScoreModal = document.querySelector(".high-score");
 const replayBtn = document.querySelector(".modal__content button");
 const controlBtn = document.querySelectorAll(".control button");
-// const audioEatingApple = new Audio("./assets/audio/biting-into-an-apple.mp3");
-// const audioHurt = new Audio("./assets/audio/umph.mp3");
-// const themeSong = new Audio("./assets/audio/Snake Game - Theme Song.mp3");
+const audioEatingApple = new Audio("./assets/audio/biting-into-an-apple.mp3");
+const audioHurt = new Audio("./assets/audio/umph.mp3");
+const themeSong = new Audio("./assets/audio/Snake Game - Theme Song.mp3");
 
 let snakeX = 15,
   snakeY = 15;
 let randomArr = [1, -1];
-let foodX, foodY;
+let foodX = snakeX + randomArr[Math.floor(Math.random() * randomArr.length)], foodY = snakeY + randomArr[Math.floor(Math.random() * randomArr.length)];
 let velocityX = 0,
   velocityY = 0;
 let rockX, rockY;
 let rockList = [];
 
-let speed = 100;
+let speed = 70;
 let snakeBody = [];
 let gameOver = false;
 let modal = document.querySelector(".modal");
@@ -29,23 +29,6 @@ highScoreElement.innerText = `High Score: ${highScore}`;
 highScoreModal.innerText = `High Score: ${highScore}`;
 
 let intervalId;
-
-const reset = () => {
-  snakeY = 15;
-  snakeX = 15;
-  randomArr = [1, -1];
-  foodX = 0;
-  foodY = 0;
-  velocityX = 0;
-  velocityY = 0;
-  rockList = [];
-  rockX = 0;
-  rockY = 0;
-  speed = 100;
-  snakeBody = [];
-  gameOver = false;
-  score = 0;
-};
 
 // Creat random rock position
 const randomRock = () => {
@@ -60,17 +43,12 @@ const randomFoodPosition = () => {
   foodX = Math.floor(Math.random() * 30) + 1;
   foodY = Math.floor(Math.random() * 30) + 1;
 };
-function initGame(){
-      // update snake head position
-  snakeX = snakeX + velocityX;
-  snakeY = snakeY + velocityY;
 
-  //   shift snake body
-  for (let i = snakeBody.length - 1; i >= 0; i--) {
-    snakeBody[i] = snakeBody[i - 1];
-  }
-  snakeBody[0] = [snakeX, snakeY];
+// random rock
+randomRock();
+htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`;
 
+function initGame() {
   let htmlMarkup;
   rockList.forEach((rock) => {
     if ((foodX !== rock[0], foodY !== rock[1])) {
@@ -83,10 +61,21 @@ function initGame(){
   rockList.forEach(function (rock) {
     htmlMarkup += ` <div class = 'rock' style = 'grid-area: ${rock[1]} / ${rock[0]}'></div>`;
   });
+  //   shift snake body
+  for (let i = snakeBody.length - 1; i > 0; i--) {
+    snakeBody[i] = snakeBody[i - 1];
+  }
+  snakeBody[0] = [snakeX, snakeY];
+
+    // update snake head position
+    snakeX += velocityX;
+    snakeY +=  velocityY;
+
+
 
   //   if food has eaten -> snake length + 1
   if (snakeX === foodX && snakeY === foodY) {
-    // audioEatingApple.play();
+    audioEatingApple.play();
     randomFoodPosition();
     snakeBody.push([foodX, foodY]);
     score++;
@@ -106,13 +95,7 @@ function initGame(){
     highScoreModal.innerText = `High Score: ${highScore}`;
   }
 
-  //   if snake reach rock -> game over
-  rockList.forEach(function (rock) {
-    if (snakeX === rock[0] && snakeY === rock[1]) {
-      // audioHurt.play();
-      gameOver = true;
-    }
-  });
+
 
   for (let i = 0; i < snakeBody.length; i++) {
     // Adding a div for each part of the snake's body
@@ -123,14 +106,22 @@ function initGame(){
       snakeBody[0][1] === snakeBody[i][1] &&
       snakeBody[0][0] === snakeBody[i][0]
     ) {
-      // audioHurt.play();
+      audioHurt.play();
       gameOver = true;
     }
   }
 
+    //   if snake reach rock -> game over
+    rockList.forEach(function (rock) {
+      if (snakeX === rock[0] && snakeY === rock[1]) {
+        audioHurt.play();
+        gameOver = true;
+      }
+    });
+
   //   if snake reach wall -> game over
   if (snakeX < 1 || snakeX > 30 || snakeY < 1 || snakeY > 30) {
-    // audioHurt.play();
+    audioHurt.play();
 
     gameOver = true;
   }
@@ -145,14 +136,8 @@ function initGame(){
   if (gameOver) {
     handleGameOver();
   }
-};
-// random rock and food
-function random() {
-  randomRock();
-  randomFoodPosition();
 }
 
-function control() {
   document.addEventListener("keydown", function (e) {
     // change velocity when key down
     if (e.key === "ArrowUp" && velocityY != 1) {
@@ -187,30 +172,21 @@ function control() {
       }
     });
   });
-}
 
-function startGame() {
-  random();
-  control();
-  intervalId = setInterval(initGame, speed);
-}
-
-startGame();
+intervalId = setInterval(initGame, speed);
 
 // Game over
 const handleGameOver = () => {
   clearInterval(intervalId);
   modal.classList.add("show");
   replayBtn.addEventListener("click", function (e) {
-    reset();
-    startGame()
+    location.reload();
     modal.classList.remove("show");
   });
   if (modal.classList.contains("show")) {
     document.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        reset();
-        startGame()
+        this.location.reload()
         modal.classList.remove("show");
       }
     });
