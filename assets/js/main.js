@@ -5,9 +5,9 @@ const scoreModal = document.querySelector(".score");
 const highScoreModal = document.querySelector(".high-score");
 const replayBtn = document.querySelector(".modal__content button");
 const controlBtn = document.querySelectorAll(".control button");
-const audioEatingApple = new Audio("./assets/audio/biting-into-an-apple.mp3");
-const audioHurt = new Audio("./assets/audio/umph.mp3");
-const themeSong = new Audio("./assets/audio/Snake Game - Theme Song.mp3");
+// const audioEatingApple = new Audio("./assets/audio/biting-into-an-apple.mp3");
+// const audioHurt = new Audio("./assets/audio/umph.mp3");
+// const themeSong = new Audio("./assets/audio/Snake Game - Theme Song.mp3");
 
 let snakeX = 15,
   snakeY = 15;
@@ -32,6 +32,7 @@ let intervalId;
 
 const reset = () => {
   snakeY = 15;
+  snakeX = 15;
   randomArr = [1, -1];
   foodX = 0;
   foodY = 0;
@@ -59,10 +60,17 @@ const randomFoodPosition = () => {
   foodX = Math.floor(Math.random() * 30) + 1;
   foodY = Math.floor(Math.random() * 30) + 1;
 };
-const initGame = () => {
-  if (gameOver) {
-    handleGameOver();
+function initGame(){
+      // update snake head position
+  snakeX = snakeX + velocityX;
+  snakeY = snakeY + velocityY;
+
+  //   shift snake body
+  for (let i = snakeBody.length - 1; i >= 0; i--) {
+    snakeBody[i] = snakeBody[i - 1];
   }
+  snakeBody[0] = [snakeX, snakeY];
+
   let htmlMarkup;
   rockList.forEach((rock) => {
     if ((foodX !== rock[0], foodY !== rock[1])) {
@@ -78,15 +86,15 @@ const initGame = () => {
 
   //   if food has eaten -> snake length + 1
   if (snakeX === foodX && snakeY === foodY) {
-    audioEatingApple.play();
+    // audioEatingApple.play();
     randomFoodPosition();
     snakeBody.push([foodX, foodY]);
     score++;
 
     // while score % 10 == 0 -> snake speed up
-    if (score % 10 === 0 && score !== 0) {
-      speed -= 10;
-    }
+    // if (score % 10 === 0 && score !== 0) {
+    //   speed -= 10;
+    // }
 
     // while high score > score -> high score = score;
     highScore = score > highScore ? score : highScore;
@@ -101,20 +109,10 @@ const initGame = () => {
   //   if snake reach rock -> game over
   rockList.forEach(function (rock) {
     if (snakeX === rock[0] && snakeY === rock[1]) {
-      audioHurt.play();
+      // audioHurt.play();
       gameOver = true;
     }
   });
-
-  // update snake head position
-  snakeX = snakeX + velocityX;
-  snakeY = snakeY + velocityY;
-
-  //   shift snake body
-  for (let i = snakeBody.length - 1; i >= 0; i--) {
-    snakeBody[i] = snakeBody[i - 1];
-  }
-  snakeBody[0] = [snakeX, snakeY];
 
   for (let i = 0; i < snakeBody.length; i++) {
     // Adding a div for each part of the snake's body
@@ -125,14 +123,14 @@ const initGame = () => {
       snakeBody[0][1] === snakeBody[i][1] &&
       snakeBody[0][0] === snakeBody[i][0]
     ) {
-      audioHurt.play();
+      // audioHurt.play();
       gameOver = true;
     }
   }
 
   //   if snake reach wall -> game over
   if (snakeX < 1 || snakeX > 30 || snakeY < 1 || snakeY > 30) {
-    audioHurt.play();
+    // audioHurt.play();
 
     gameOver = true;
   }
@@ -142,6 +140,10 @@ const initGame = () => {
   let snakeLength = document.querySelectorAll(".game__snake");
   if (snakeLength.length === 1) {
     snakeLength[0].style.background = "#ffff00";
+  }
+
+  if (gameOver) {
+    handleGameOver();
   }
 };
 // random rock and food
@@ -201,14 +203,14 @@ const handleGameOver = () => {
   modal.classList.add("show");
   replayBtn.addEventListener("click", function (e) {
     reset();
-    startGame();
+    startGame()
     modal.classList.remove("show");
   });
   if (modal.classList.contains("show")) {
     document.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         reset();
-        startGame();
+        startGame()
         modal.classList.remove("show");
       }
     });
