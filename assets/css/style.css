@@ -16,8 +16,6 @@ body {
   background: #e3f2fd;
 }
 
-
-
 .main {
   display: flex;
   flex-direction: column;
@@ -85,10 +83,10 @@ body {
   background: #a5d435;
 }
 
-.rock{
-    background-color: gray;
-    border-radius: 50%;
-    box-shadow: inset 0.2em -0.2em #000;
+.rock {
+  background-color: gray;
+  border-radius: 50%;
+  box-shadow: inset 0.2em -0.2em #000;
 }
 
 .game__apple {
@@ -148,7 +146,7 @@ body {
 }
 
 .game__snake:last-child {
-    background-color: #ffffa1;
+  background-color: #ffffa1;
 }
 
 .control {
@@ -186,83 +184,82 @@ body {
   transform: translateY(-50%);
 }
 .footer {
-    display: flex;
-    flex-direction: column;
-    font-size: 1.4rem;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.4rem;
+  text-align: center;
 }
 
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 999;
-    justify-content: center;
-    align-items: center;
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal.show {
-    display: flex;
+  display: flex;
 }
 
-.modal__overlay{
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
+.modal__overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
-.modal__content{
-    position: absolute;
-    width: 300px;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transform-origin: center;
-    animation: modalGrow 0.5s linear;
+.modal__content {
+  position: absolute;
+  width: 300px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform-origin: center;
+  animation: modalGrow 0.5s linear;
 }
 
 .modal__content button {
-    padding: 16px;
-    font-size: 1.8rem;
-    font-weight: 500;
-    color: #fff;
-    background-color: #a5d435;
-    border: none;
-    outline: none;
-    cursor: pointer;
+  padding: 16px;
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: #a5d435;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
-.modal__content button:hover{
-    opacity: 0.7;
+.modal__content button:hover {
+  opacity: 0.7;
 }
 
 .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 3rem;
-    padding: 10px
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 3rem;
+  padding: 10px;
 }
 
 .content img {
-    width: 70px;
-    object-fit: cover;
+  width: 70px;
+  object-fit: cover;
 }
 
 @keyframes modalGrow {
-    from {
-        transform: scale(0);
-    }
+  from {
+    transform: scale(0);
+  }
 
-    to{
-        transform: scale(1);
-    }
+  to {
+    transform: scale(1);
+  }
 }
-
 
 /* Pc */
 @media (min-width: 1024px) {
@@ -270,16 +267,12 @@ body {
 
 /* Tablet */
 @media (min-width: 740px) and (max-width: 1023px) {
-    .heading {
-        display: none;
-    }
-    .snake-box {
-        width: 65vmin;
-        height: 65vmin;
-    }
-
-  .control {
-    display: flex;
+  .heading {
+    display: none;
+  }
+  .snake-box {
+    width: 65vmin;
+    height: 65vmin;
   }
 
   .heading {
@@ -291,44 +284,43 @@ body {
   }
   .control button.right {
     right: 10%;
-  } 
+  }
 
   .footer {
     margin: auto 10px 10px auto;
   }
-
 }
 
 /* Mobile */
 @media (max-width: 739px) {
-    .heading {
-        display: none;
-    }
-    .control {
-        display: flex;
-      }
-      .heading {
-        width: 100%;
-      }
-      .footer {
-        margin: auto 10px 10px auto;
-      }
-      .apple:before {
-        top: -4px;
-        left: 2px;
-      }
-    
-      .apple:after {
-        width: 2px;
-        height: 4px;
-        top: -4px;
-        left: 6px;
-      }
+  .heading {
+    display: none;
+  }
+  .control {
+    display: flex;
+  }
+  .heading {
+    width: 100%;
+  }
+  .footer {
+    margin: auto 10px 10px auto;
+  }
+  .apple:before {
+    top: -4px;
+    left: 2px;
+  }
 
-     .control button.left {
-        left: 10%;
-      }
-      .control button.right {
-        right: 10%;
-      } 
+  .apple:after {
+    width: 2px;
+    height: 4px;
+    top: -4px;
+    left: 6px;
+  }
+
+  .control button.left {
+    left: 10%;
+  }
+  .control button.right {
+    right: 10%;
+  }
 }
