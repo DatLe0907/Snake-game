@@ -18,7 +18,7 @@ let velocityX = 0,
 let rockX, rockY;
 let rockList = [];
 
-let speed = 70;
+let speed = 60;
 let snakeBody = [];
 let gameOver = false;
 let modal = document.querySelector(".modal");
@@ -29,30 +29,42 @@ highScoreElement.innerText = `High Score: ${highScore}`;
 highScoreModal.innerText = `High Score: ${highScore}`;
 
 let intervalId;
-
+let random;
+const randomApple = () => {
+  random = Math.floor(Math.random() * 100 + 1);
+}
 // Creat random rock position
-const randomRock = () => {
+const randomRock =  () => {
   for (let i = 0; i < 10; i++) {
     rockX = Math.floor(Math.random() * 30 + 1);
     rockY = Math.floor(Math.random() * 30 + 1);
     rockList.push([rockX, rockY]);
   }
 };
+
+randomRock();
+rockList.forEach(function(rock,index){
+  if(rock[0] === snakeX && rock[1] === snakeY){
+    rockList.splice(index, 1)
+  }
+})
+
 // creat random food if food position != rock position else recreate
 const randomFoodPosition = () => {
   foodX = Math.floor(Math.random() * 30) + 1;
   foodY = Math.floor(Math.random() * 30) + 1;
-};
 
-// random rock
-randomRock();
+};
+let htmlMarkup;
+
 htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`;
 
 function initGame() {
-  let htmlMarkup;
+
   rockList.forEach((rock) => {
     if ((foodX !== rock[0], foodY !== rock[1])) {
-      htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`;
+        htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`;
+
     } else {
       randomFoodPosition();
     }
@@ -77,8 +89,15 @@ function initGame() {
   if (snakeX === foodX && snakeY === foodY) {
     audioEatingApple.play();
     randomFoodPosition();
+    randomApple();
     snakeBody.push([foodX, foodY]);
-    score++;
+    let isGoldApple = document.querySelector('.game__apple').classList.contains('gold');
+    if(isGoldApple){
+      score+=10;
+    }
+    else{
+      score++;
+    }
 
     // while score % 10 == 0 -> snake speed up
     // if (score % 10 === 0 && score !== 0) {
@@ -127,6 +146,9 @@ function initGame() {
   }
 
   boxGame.innerHTML = htmlMarkup;
+  if(random === 1 || random === 2 || random === 3 || random === 4 || random === 5 ){
+    document.querySelector('.game__apple').classList.add('gold')
+  }
   //   set snake head color = yellowgreen
   let snakeLength = document.querySelectorAll(".game__snake");
   if (snakeLength.length === 1) {
@@ -186,7 +208,7 @@ const handleGameOver = () => {
   if (modal.classList.contains("show")) {
     document.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
-        this.location.reload()
+        location.reload()
         modal.classList.remove("show");
       }
     });
