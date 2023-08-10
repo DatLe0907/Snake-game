@@ -31,7 +31,7 @@ highScoreModal.innerText = `High Score: ${highScore}`;
 let intervalId;
 let random;
 const randomApple = () => {
-  random = Math.floor(Math.random() * 100 + 1);
+  random = Math.floor(Math.random() * 11 + 1);
 }
 // Creat random rock position
 const randomRock =  () => {
@@ -55,9 +55,32 @@ const randomFoodPosition = () => {
   foodY = Math.floor(Math.random() * 30) + 1;
 
 };
+
+let effectList = [ ];
+let time = 0;
+
+const efffectApple = (effect,time) => {
+    let isEffectApple  = document.querySelector('.game__apple').classList;
+    if(isEffectApple[1] === effect){
+      effectList.push(effect);
+    }
+
+    timeEffect = time;
+    if ( timeEffect > 0){
+      setTimeout(() => {
+        timeEffect--
+      },1000)
+    } 
+    if(timeEffect === 0) {
+      effectList.splice(0, effectList.length)
+    }
+}
+
+
 let htmlMarkup;
 
 htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`;
+let isGoldApple, isSlowApple, isInvincibleApple;
 
 function initGame() {
 
@@ -92,12 +115,36 @@ function initGame() {
     randomApple();
     snakeBody.push([foodX, foodY]);
     let isGoldApple = document.querySelector('.game__apple').classList.contains('gold');
+    let isSlowApple = document.querySelector('.game__apple').classList.contains('slow');
+    let isInvincibleApple = document.querySelector('.game__apple').classList.contains('invincible');
     if(isGoldApple){
       score+=10;
     }
-    else{
+    else if(isGoldApple === false){
       score++;
     }
+
+    if (isSlowApple){
+      efffectApple('slow', 15)
+    }
+    if (isInvincibleApple){
+      efffectApple('invincible', 20)
+    }
+
+    effectList.forEach(function(effect){
+        if(snakeX === 1){
+          snakeX = 30
+        }
+        if(snakeX === 31){
+          snakeX = 1
+        }
+        if(snakeY === 1){
+          snakeY = 30
+        }
+        if(snakeY === 31){
+          snakeY = 1
+        }
+    })
 
     // while score % 10 == 0 -> snake speed up
     // if (score % 10 === 0 && score !== 0) {
@@ -125,29 +172,49 @@ function initGame() {
       snakeBody[0][1] === snakeBody[i][1] &&
       snakeBody[0][0] === snakeBody[i][0]
     ) {
-      audioHurt.play();
-      gameOver = true;
+      if(isInvincibleApple){
+        gameOver = false;
+      }
+      else{
+        audioHurt.play();
+        gameOver = true;
+      }
     }
   }
 
     //   if snake reach rock -> game over
     rockList.forEach(function (rock) {
       if (snakeX === rock[0] && snakeY === rock[1]) {
-        audioHurt.play();
-        gameOver = true;
+        if(isInvincibleApple){
+          gameOver = false;
+        }
+        else{
+          audioHurt.play();
+          gameOver = true;
+        }
       }
     });
 
   //   if snake reach wall -> game over
   if (snakeX < 1 || snakeX > 30 || snakeY < 1 || snakeY > 30) {
-    audioHurt.play();
-
-    gameOver = true;
+    if(isInvincibleApple){
+      gameOver = false;
+    }
+    else{
+      audioHurt.play();
+      gameOver = true;
+    }
   }
 
   boxGame.innerHTML = htmlMarkup;
-  if(random === 1 || random === 2 || random === 3 || random === 4 || random === 5 ){
-    document.querySelector('.game__apple').classList.add('gold')
+  // if(random >=1 && random<=5 ){
+  //   document.querySelector('.game__apple').classList.add('gold')
+  // }
+  // else if(random >5 && random<=10 ){
+  //   document.querySelector('.game__apple').classList.add('slow')
+  // }
+   if (random <=11){
+    document.querySelector('.game__apple').classList.add('invincible')
   }
   //   set snake head color = yellowgreen
   let snakeLength = document.querySelectorAll(".game__snake");

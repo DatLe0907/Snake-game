@@ -4,6 +4,8 @@
   box-sizing: border-box;
 }
 
+:root {}
+
 html {
   font-size: 62.5%;
   font-family: sans-serif;
@@ -95,6 +97,20 @@ body {
   font-size: 1.9rem;
 }
 
+
+.game__apple::before {
+  content: '';
+  display: block;
+  background-color: #fff;
+  border-radius: 8px 8px 3px 3px;
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  top: 2px;
+  right:3px;
+  z-index: 2;
+}
+
 .apple {
   width: 100%;
   height: 100%;
@@ -107,8 +123,17 @@ body {
   z-index: 1;
 }
 
+
 .game__apple.gold .apple {
   background-color: gold;
+}
+
+.game__apple.slow .apple {
+  background-color: #A0EAEB;
+}
+
+.game__apple.invincible .apple {
+  background-color: #8F4FA0;
 }
 
 .apple:before {
