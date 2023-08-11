@@ -209,7 +209,18 @@ function initGame() {
       gameOver = true;
     }
     else {
-      
+      if(snakeX === 0){
+        snakeX = 30
+      }
+      if(snakeX === 31){
+        snakeX = 1
+      }
+      if(snakeY === 0){
+        snakeY = 30
+      }
+      if(snakeY === 31){
+        snakeY = 1
+      }
     }
   }
 
