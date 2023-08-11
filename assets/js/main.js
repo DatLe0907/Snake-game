@@ -196,9 +196,6 @@ function initGame() {
         audioHurt.play();
         gameOver = true;
       }
-      else {
-        
-      }
       }
     });
 
