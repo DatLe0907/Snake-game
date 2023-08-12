@@ -12,53 +12,10 @@
     />
     <link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
   </head>
-  <body>
+  <body onload="onloaded()">
     <div class="main">
-      <div class="modal">
-        <div class="modal__overlay"></div>
-        <div class="modal__content">
-          <div class="content">
-            <img src="./assets/img/modal/trophy.jpeg" alt="" />
-            <h4 class="high-score"></h4>
-          </div>
-          <div class="content">
-            <img src="./assets/img/modal/star.jpg" alt="" />
-            <h4 class="score">Score: 0</h4>
-          </div>
-          <button>Play Again</button>
-        </div>
-      </div>
-      <div class="heading">
-        <h4>Snake</h4>
-        <img src="./assets/img/snake.png" alt="" />
-      </div>
-      <div class="snake-box">
-          <div class="box__detail">
-            <h4 class="heading__high-score">Hight Score: 0</h4>
-            <h4 class="heading__current-score">Score: 0</h4>
-          </div>
-          
-        <div class="wrapper">
-          <div class="box__game"></div>
-        </div>
-      </div>
-      <div class="control">
-        <button class="up">
-          <i class="fa-solid fa-chevron-up"></i>
-        </button>
-        <button class="down">
-          <i class="fa-solid fa-chevron-down"></i>
-        </button>
-        <button class="left">
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-        <button class="right">
-          <i class="fa-solid fa-chevron-right"></i>
-        </button>
-      </div>
-      <div class="footer">
-        <i>Source: Datle0907</i>
-        <span>From: Team IT07</span>
+      <div class="loading">
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
       </div>
     </div>
     <script src="./assets/js/main.js" defer></script>
