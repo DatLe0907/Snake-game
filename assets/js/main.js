@@ -16,10 +16,6 @@ function onloaded() {
           <button>Play Again</button>
         </div>
       </div>
-      <div class="heading">
-        <h4>Snake</h4>
-        <img src="./assets/img/snake.png" alt="" />
-      </div>
       <div class="snake-box">
           <div class="box__detail">
             <h4 class="heading__high-score">Hight Score: 0</h4>
@@ -84,7 +80,7 @@ function onloaded() {
   let modal = document.querySelector(".modal");
   let score = 0;
   let random;
-  let originSpeed = 100;
+  let originSpeed = 70;
   let speedEffect = originSpeed;
   let through = false;
   let listChoose = [
@@ -213,10 +209,6 @@ function onloaded() {
     }
     snakeBody[0] = [snakeX, snakeY];
 
-    // update snake head position
-    snakeX += velocityX;
-    snakeY += velocityY;
-
     //   if food has eaten -> snake length + 1
     if (snakeX === foodX && snakeY === foodY) {
       switch (document.querySelector(".game__apple").classList[1]) {
@@ -305,6 +297,10 @@ function onloaded() {
       scoreModal.innerText = `Score: ${score}`;
       highScoreModal.innerText = `High Score: ${highScore}`;
     }
+
+    // update snake head position
+    snakeX += velocityX;
+    snakeY += velocityY;
 
     for (let i = 0; i < snakeBody.length; i++) {
       // Adding a div for each part of the snake's body

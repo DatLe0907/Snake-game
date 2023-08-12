@@ -16,13 +16,14 @@ html {
   font-size: 62.5%;
   font-family: "Minecraftia", sans-serif;
   cursor: url(../cursor/default.cur), auto;
+  color: #fff;
 }
 
 body {
   height: 100vh;
   display: flex;
   justify-content: center;
-  background: #e3f2fd;
+  background: #000;
 }
 
 .main {
@@ -68,27 +69,6 @@ body {
   100% {
     transform: rotate(360deg);
   }
-}
-
-
-.heading {
-  position: relative;
-  width: 400px;
-  height: 80px;
-  background-color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.heading h4 {
-  padding: 20px 0px 20px 20px;
-  font-size: 3rem;
-}
-
-.heading img {
-  margin-left: -10px;
-  height: 60px;
 }
 
 .snake-box {
@@ -223,8 +203,8 @@ body {
 
 .control {
   display: none;
-  width: 100%;
-  height: 100px;
+  width: 80vmin;
+  height: 20vmin;
   position: relative;
   margin-top: 20px;
 }
@@ -233,6 +213,8 @@ body {
   background-color: transparent;
   padding: 12px 14px;
   cursor: url("../cursor/hover.cur"), pointer;
+  border: solid 1px #fff;
+  color: #fff;
 }
 
 .control button.up {
@@ -346,10 +328,8 @@ body {
 }
 
 /* Tablet */
-@media (min-width: 740px) and (max-width: 1023px) {
-  .heading {
-    display: none;
-  }
+@media (min-width: 485px) and (max-width: 1023px) {
+
 
   /* .wrapper {
     padding: 12.5px 28px; */
@@ -358,10 +338,6 @@ body {
   .snake-box {
     width: 65vmin;
     height: 65vmin;
-  }
-
-  .heading {
-    width: 100%;
   }
 
   .control {
@@ -382,9 +358,10 @@ body {
 
 
 /* Mobile */
-@media (max-width: 739px) {
-  .heading {
-    display: none;
+@media (max-width: 484px) {
+  .snake-box {
+    width: 100vw;
+    height: 100vw;
   }
   .control {
     display: flex;
@@ -409,6 +386,12 @@ body {
   }
   .control button.right {
     right: 10%;
+  }
+  .footer {
+    font-size: 1rem;
+    position: absolute;
+    bottom: 0;
+    right: -85%;
   }
 }
 
