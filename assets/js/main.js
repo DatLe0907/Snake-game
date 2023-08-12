@@ -23,7 +23,11 @@ function onloaded() {
       <div class="snake-box">
           <div class="box__detail">
             <h4 class="heading__high-score">Hight Score: 0</h4>
-            <h4 class="heading__effect-time">Effect Time: <b>0</b>s</h4>
+            <div class = "heading__effect">
+              <h4 class="heading__effect-time"></h4>
+              <h4 class="heading__effect-time"></h4>
+              <h4 class="heading__effect-time"></h4>
+            </div>
             <h4 class="heading__current-score">Score: 0</h4>
           </div>
           
@@ -57,7 +61,12 @@ function onloaded() {
   const highScoreModal = document.querySelector(".high-score");
   const replayBtn = document.querySelector(".modal__content button");
   const controlBtn = document.querySelectorAll(".control button");
+
   const audioEatingApple = new Audio("./assets/audio/biting-into-an-apple.mp3");
+  const audioGold = new Audio("./assets/audio/gold.mp3");
+  const audioSlow = new Audio("./assets/audio/slow.mp3");
+  const audioInvincible = new Audio("./assets/audio/invincible.mp3");
+  const audioInvincibleSecond = new Audio("./assets/audio/invincible-2.mp3");
   const audioHurt = new Audio("./assets/audio/umph.mp3");
 
   let snakeX = 15,
@@ -75,41 +84,60 @@ function onloaded() {
   let modal = document.querySelector(".modal");
   let score = 0;
   let random;
-  let speedEffect = 70;
+  let originSpeed = 100;
+  let speedEffect = originSpeed;
   let through = false;
-
-  let listEffect = [
+  let listChoose = [
     {
       name: "normal",
       point: 1,
-    },
-    {
-      name: "normal",
-      point: 1,
-    },
-    {
-      name: "normal",
-      point: 1,
+      percent: 70 / 100,
+      time: undefined,
     },
     {
       name: "gold",
       point: 10,
+      percent: 15 / 100,
+      time: undefined,
     },
     {
       name: "slow",
       time: 15,
-      speed: 150,
+      speed: speedEffect + Math.floor(speedEffect * (20 / 100)),
       point: 2,
+      percent: 10 / 100,
     },
     {
       name: "invincible",
       time: 10,
       point: 5,
-      speed: 20,
+      speed: speedEffect - Math.floor(speedEffect * (30 / 100)),
       through: true,
+      percent: 5 / 100,
     },
   ];
+  let listEffect = [];
+  let selectListEffectLength = 100;
+  function EffectListinGame(percent, obj) {
+    for (let i = 1; i <= Math.floor(selectListEffectLength * percent); i++) {
+      listEffect.unshift(obj);
+    }
+  }
 
+  listChoose.forEach((effect) => {
+    EffectListinGame(effect.percent, effect);
+  });
+  let listEffectHasTime = [];
+  listChoose.forEach((item) => {
+    listEffectHasTime.push(item);
+  });
+  let listEffectHasTimeFilter = listEffectHasTime.filter(
+    (time) => time.time !== undefined
+  );
+
+  let effectTimeDisplayList = document.querySelectorAll(
+    ".heading__effect .heading__effect-time"
+  );
   // random effect index
 
   random = Math.floor(Math.random() * listEffect.length);
@@ -149,6 +177,22 @@ function onloaded() {
     foodY = Math.floor(Math.random() * 30) + 1;
   };
 
+  //hàm để xóa hàm init cũ và gọi lại  hàm để cập nhật speed //----NOTE
+  function newSpeed(type) {
+    switch (type) {
+      case 1:
+        // dùng khi ăn táo có hiệu ứng ( có time Effect ) cập nhật time mới đó
+        clearInterval(intervalId);
+        intervalId = setInterval(initGame, speedEffect);
+        break;
+      case 2:
+        // dùng khi táo hết thời gian hiệu ứng để xóa speed và set như cũ
+        clearInterval(intervalId);
+        intervalId = setInterval(initGame, originSpeed);
+        break;
+    }
+  }
+
   let htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`;
   function initGame() {
     // check if rock position = food position -> creat new food
@@ -175,48 +219,81 @@ function onloaded() {
 
     //   if food has eaten -> snake length + 1
     if (snakeX === foodX && snakeY === foodY) {
-      audioEatingApple.play();
+      switch (document.querySelector(".game__apple").classList[1]) {
+        case "normal":
+          audioEatingApple.play();
+          break;
+        case "gold":
+          audioEatingApple.play();
+          audioGold.play();
+          break;
+        case "slow":
+          audioEatingApple.play();
+          audioSlow.play();
+          break;
+        case "invincible":
+          audioEatingApple.play();
+          audioInvincibleSecond.play();
+          setTimeout(() => {
+            audioInvincible.play();
+          },700)
+          break;
+      }
       listEffect.forEach((effect, index) => {
         if (index === random) {
           score += effect.point;
+          // let speedUpCount = score / 10;
+          // for (let i = 1; i <= speedUpCount; i++) {
+          //   if (speedEffect >= 30) {
+          //     speedEffect -= Math.floor(originSpeed * (5 / 100));
+          //     speedUpCount-= i
+          //   }
+          //   newSpeed(1);
+          // }
           let timeEffect;
-          if (effect.time !== undefined) {
-            timeEffect = effect.time;
-          }
+          listEffectHasTimeFilter.forEach((timeItem, index) => {
+            if (effect.time === timeItem.time) {
+              timeEffect = timeItem.time;
+              effectTimeDisplayList[
+                index
+              ].innerText = `${timeItem.name}-${timeEffect}s`;
+              let intervalItem = setInterval(() => {
+                if (timeEffect > 0) {
+                  return (
+                    timeEffect--,
+                    (effectTimeDisplayList[
+                      index
+                    ].innerText = `${timeItem.name}: ${timeEffect}s`)
+                  );
+                }
+                if (timeEffect === 0 || timeEffect === undefined) {
+                  newSpeed(2);
+                  setTimeout(function () {
+                    effectTimeDisplayList[index].innerText = "";
+                  }, 500);
+                  return (
+                    timeEffect, (through = false), clearInterval(intervalItem)
+                  );
+                }
+              }, 1000);
+            }
+          });
           if (timeEffect) {
             if (effect.through) {
               through = effect.through;
             }
             if (effect.speed) {
               speedEffect = effect.speed;
+              newSpeed(1);
             }
           }
-          setInterval(() => {
-            if (timeEffect > 0) {
-              document.querySelector(
-                ".box__detail h4:nth-child(2)"
-              ).style.display = "block";
-              return (
-                (document.querySelector(
-                  ".box__detail h4:nth-child(2) b"
-                ).innerText = timeEffect),
-                timeEffect--
-              );
-            }
-            if (timeEffect === 0 || timeEffect === undefined) {
-              document.querySelector(
-                ".box__detail h4:nth-child(2)"
-              ).style.display = "none";
-              return timeEffect, (speed = 70), (through = false);
-            }
-          }, 1000);
         }
       });
 
       randomFoodPosition();
       random = Math.floor(Math.random() * listEffect.length);
 
-      // random apple effec
+      // random apple effect
       snakeBody.push([foodX, foodY]);
 
       // while high score > score -> high score = score;
