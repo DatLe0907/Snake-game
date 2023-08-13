@@ -61,8 +61,8 @@ function onloaded() {
   const audioEatingApple = new Audio("./assets/audio/biting-into-an-apple.mp3");
   const audioGold = new Audio("./assets/audio/gold.mp3");
   const audioSlow = new Audio("./assets/audio/slow.mp3");
-  const audioInvincible = new Audio("./assets/audio/invincible.mp3");
-  const audioInvincibleSecond = new Audio("./assets/audio/invincible-2.mp3");
+  const audioInvincibleStart = new Audio("./assets/audio/invincible-start.mp3");
+  const audioInvincibleRun = new Audio("./assets/audio/invincible-run.mp3");
   const audioHurt = new Audio("./assets/audio/umph.mp3");
 
   let snakeX = 15,
@@ -134,6 +134,8 @@ function onloaded() {
   let effectTimeDisplayList = document.querySelectorAll(
     ".heading__effect .heading__effect-time"
   );
+
+  let timeRunArr = []
   // random effect index
 
   random = Math.floor(Math.random() * listEffect.length);
@@ -145,8 +147,10 @@ function onloaded() {
       }
     });
   }
-
-  let highScore = localStorage.getItem("heading__high-score") || 0;
+  let startedScore = 0;
+  startedScore = btoa(startedScore.toString())
+  let highScore = localStorage.getItem("high-score") || startedScore;
+  highScore = Number(atob(highScore))
   highScoreElement.innerText = `High Score: ${highScore}`;
   highScoreModal.innerText = `High Score: ${highScore}`;
 
@@ -225,10 +229,13 @@ function onloaded() {
           break;
         case "invincible":
           audioEatingApple.play();
-          audioInvincibleSecond.play();
-          setTimeout(() => {
-            audioInvincible.play();
+          audioInvincibleStart.play();
+          setTimeout(function(){
+            audioInvincibleRun.play();
           },700)
+          break;
+        default:
+          audioEatingApple.play();
           break;
       }
       listEffect.forEach((effect, index) => {
@@ -268,8 +275,11 @@ function onloaded() {
                   );
                 }
               }, 1000);
+
             }
           });
+          
+          
           if (timeEffect) {
             if (effect.through) {
               through = effect.through;
@@ -290,8 +300,8 @@ function onloaded() {
 
       // while high score > score -> high score = score;
       highScore = score > highScore ? score : highScore;
-
-      localStorage.setItem("heading__high-score", highScore);
+      let encodedHighScore  = btoa(highScore.toString());
+      localStorage.setItem("high-score", encodedHighScore);
       scoreElement.innerText = `Score: ${score}`;
       highScoreElement.innerText = `High Score: ${highScore}`;
       scoreModal.innerText = `Score: ${score}`;

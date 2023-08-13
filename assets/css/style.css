@@ -242,6 +242,7 @@ body {
   flex-direction: column;
   font-size: 1.4rem;
   text-align: center;
+  padding-bottom: 20px;
 }
 
 .modal {
@@ -330,7 +331,9 @@ body {
 /* Tablet */
 @media (min-width: 485px) and (max-width: 1023px) {
 
-
+  .modal__content {
+    top: 10%;
+  }
   /* .wrapper {
     padding: 12.5px 28px; */
   /* } */
@@ -342,6 +345,7 @@ body {
 
   .control {
     display: flex;
+    margin-bottom: auto;
   }
 
   .control button.left {
@@ -350,24 +354,33 @@ body {
   .control button.right {
     right: 10%;
   }
-
-  .footer {
-    margin: auto 10px 10px auto;
-  }
 }
 
 
 /* Mobile */
 @media (max-width: 484px) {
+  .main {
+    justify-content: flex-start;
+  }
+  .modal__content {
+    top: 10%;
+  }
   .snake-box {
     width: 100vw;
     height: 100vw;
   }
   .control {
     display: flex;
+    display: flex;
+    width: 100%;
+    height: 20vh;
+    margin-top: 60px;
   }
   .footer {
     margin: auto 10px 10px auto;
+    position: absolute;
+    bottom: 0;
+    right: 0;
   }
   .apple:before {
     top: -4px;
@@ -388,10 +401,8 @@ body {
     right: 10%;
   }
   .footer {
-    font-size: 1rem;
+    font-size: 0.5rem;
     position: absolute;
-    bottom: 0;
-    right: -85%;
   }
 }
 
