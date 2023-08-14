@@ -80,9 +80,14 @@ function onloaded() {
   let modal = document.querySelector(".modal");
   let score = 0;
   let random;
-  let originSpeed = 70;
+
+
+  let originSpeed = 100;
   let speedEffect = originSpeed;
   let through = false;
+  let flagEffect = false;
+
+
   let listChoose = [
     {
       name: "normal",
@@ -99,7 +104,7 @@ function onloaded() {
     {
       name: "slow",
       time: 15,
-      speed: speedEffect + Math.floor(speedEffect * (20 / 100)),
+      speed: speedEffect + Math.floor(speedEffect * (25 / 100)),
       point: 2,
       percent: 10 / 100,
     },
@@ -107,7 +112,7 @@ function onloaded() {
       name: "invincible",
       time: 10,
       point: 5,
-      speed: speedEffect - Math.floor(speedEffect * (30 / 100)),
+      speed: speedEffect - Math.floor(speedEffect * (50 / 100)),
       through: true,
       percent: 5 / 100,
     },
@@ -120,29 +125,44 @@ function onloaded() {
     }
   }
 
+  
   listChoose.forEach((effect) => {
     EffectListinGame(effect.percent, effect);
   });
-  let listEffectHasTime = [];
-  listChoose.forEach((item) => {
-    listEffectHasTime.push(item);
-  });
-  let listEffectHasTimeFilter = listEffectHasTime.filter(
-    (time) => time.time !== undefined
-  );
+
+  let listChooseEffectHasTime = listChoose.filter(effect => {
+    effect.time !== undefined
+  })
+
+
+  let listEffectHasTime = [],
+  listEffectNoTime = [];
+  listEffect.forEach(function(effect){
+    if(effect.time !== undefined){
+      listEffectHasTime.push(effect)
+    }
+    else {
+      listEffectNoTime.push(effect)
+    }
+
+  })
+
+
+
+
+
 
   let effectTimeDisplayList = document.querySelectorAll(
     ".heading__effect .heading__effect-time"
   );
 
-  let timeRunArr = []
-  // random effect index
 
-  random = Math.floor(Math.random() * listEffect.length);
-  function randomAppleEffect() {
-    listEffect.forEach((effect, index) => {
+
+  // random effect index
+  function randomAppleEffect(listEffectType) {
+    random = Math.floor(Math.random() * listEffectType.length);
+    listEffectType.forEach((effect, index) => {
       if (index === random) {
-        // if random effect index = effect item -> add effect model
         document.querySelector(".game__apple").classList.add(`${effect.name}`);
       }
     });
@@ -240,55 +260,63 @@ function onloaded() {
       }
       listEffect.forEach((effect, index) => {
         if (index === random) {
-          score += effect.point;
-          // let speedUpCount = score / 10;
-          // for (let i = 1; i <= speedUpCount; i++) {
-          //   if (speedEffect >= 30) {
-          //     speedEffect -= Math.floor(originSpeed * (5 / 100));
-          //     speedUpCount-= i
-          //   }
-          //   newSpeed(1);
-          // }
-          let timeEffect;
-          listEffectHasTimeFilter.forEach((timeItem, index) => {
-            if (effect.time === timeItem.time) {
-              timeEffect = timeItem.time;
-              effectTimeDisplayList[
-                index
-              ].innerText = `${timeItem.name}-${timeEffect}s`;
-              let intervalItem = setInterval(() => {
-                if (timeEffect > 0) {
-                  return (
-                    timeEffect--,
-                    (effectTimeDisplayList[
-                      index
-                    ].innerText = `${timeItem.name}: ${timeEffect}s`)
-                  );
-                }
-                if (timeEffect === 0 || timeEffect === undefined) {
-                  newSpeed(2);
-                  setTimeout(function () {
-                    effectTimeDisplayList[index].innerText = "";
-                  }, 500);
-                  return (
-                    timeEffect, (through = false), clearInterval(intervalItem)
-                  );
-                }
-              }, 1000);
-
+          for(let i = 1; i <= effect.point; i++){
+            score++;
+            if(score === 1){
+              originSpeed -= Math.floor(originSpeed * (5 / 100));
+              newSpeed(2)
             }
+            if(score === 5){
+              originSpeed -= Math.floor(originSpeed * (8 / 100));
+              newSpeed(2)
+            }
+            if(score >=10 && score % 10 === 0){
+               if(originSpeed>=50){
+                originSpeed -= Math.floor(originSpeed * (10 / 100));
+               }
+               newSpeed(2);
+            }
+          }
+          let timeEffect;
+          listEffect.forEach((timeItem, index) => {
+                timeEffect = timeItem.time;
+                effectTimeDisplayList[
+                  index
+                ].innerText = `${timeItem.name}-${timeEffect}s`;
+                let intervalItem = setInterval(() => {
+                  if (timeEffect > 0) {
+                    return (
+                      timeEffect--,
+                      (effectTimeDisplayList[
+                        index
+                      ].innerText = `${timeItem.name}: ${timeEffect}s`)
+                    );
+                  }
+                  if (timeEffect === 0 || timeEffect === undefined) {
+                    newSpeed(2);
+                    setTimeout(function () {
+                      effectTimeDisplayList[index].innerText = "";
+                    }, 500);
+                    return (
+                      timeEffect, (through = false),flagEffect = false, clearInterval(intervalItem)
+                    );
+                  }
+                }, 1000);
+  
+
+              if (timeEffect) {
+                if (effect.through) {
+                  through = effect.through;
+                }
+                if (effect.speed) {
+                  speedEffect = effect.speed;
+                  newSpeed(1);
+                }
+              }
           });
           
           
-          if (timeEffect) {
-            if (effect.through) {
-              through = effect.through;
-            }
-            if (effect.speed) {
-              speedEffect = effect.speed;
-              newSpeed(1);
-            }
-          }
+
         }
       });
 
@@ -361,12 +389,18 @@ function onloaded() {
     }
 
     boxGame.innerHTML = htmlMarkup;
-    randomAppleEffect();
-    //   set snake head color = yellowgreen
-    let snakeLength = document.querySelectorAll(".game__snake");
-    if (snakeLength.length === 1) {
-      snakeLength[0].style.filter = "brightness(120%)";
-    }
+      //   set snake head color = yellowgreen
+      let snakeLength = document.querySelectorAll(".game__snake");
+      if (snakeLength.length === 1) {
+        snakeLength[0].style.filter = "brightness(120%)";
+      }
+      // if(flagEffect === true){
+      //   randomAppleEffect(listEffectNoTime)
+      // }
+      // else {
+      // }
+      randomAppleEffect(listEffect)
+
 
     if (gameOver) {
       handleGameOver();
@@ -375,16 +409,16 @@ function onloaded() {
 
   document.addEventListener("keydown", function (e) {
     // change velocity when key down
-    if (e.key === "ArrowUp" && velocityY != 1) {
+    if ((e.key === "ArrowUp" || e.key === "w") && velocityY != 1) {
       velocityX = 0;
       velocityY = -1;
-    } else if (e.key === "ArrowDown" && velocityY != -1) {
+    } else if ((e.key === "ArrowDown" || e.key === "s") && velocityY != -1) {
       velocityX = 0;
       velocityY = 1;
-    } else if (e.key === "ArrowLeft" && velocityX != 1) {
+    } else if ((e.key === "ArrowLeft" || e.key === "a") && velocityX != 1) {
       velocityX = -1;
       velocityY = 0;
-    } else if (e.key === "ArrowRight" && velocityX != -1) {
+    } else if ((e.key === "ArrowRight" || e.key === "d") && velocityX != -1) {
       velocityX = 1;
       velocityY = 0;
     }
