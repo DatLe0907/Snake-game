@@ -2,8 +2,8 @@ const main = document.querySelector("#main");
 const themeSong = new Audio("./assets/audio/themesong.mp3");
 
 document.querySelector('.start__button').addEventListener('click',function(){
-  onloaded();
   themeSong.play();
+  onloaded();
 })
 themeSong.addEventListener('ended', function() {
   this.currentTime = 0;
@@ -82,9 +82,8 @@ function onloaded() {
 
   let snakeX = 15,
     snakeY = 15;
-  let randomArr = [1, -1];
-  let foodX = snakeX + randomArr[Math.floor(Math.random() * randomArr.length)],
-    foodY = snakeY + randomArr[Math.floor(Math.random() * randomArr.length)];
+  let foodX = Math.floor(Math.random() * 30 + 1),
+    foodY = Math.floor(Math.random() * 30 + 1);
   let velocityX = 0,
     velocityY = 0;
   let rockX, rockY;
@@ -111,7 +110,7 @@ function onloaded() {
     },
     {
       name: "gold",
-      point: 10,
+      point: 5,
       percent: 20 / 100,
       time: undefined,
     },
@@ -133,6 +132,7 @@ function onloaded() {
   ];
   let listEffect = [];
   let selectListEffectLength = 100;
+  let appleElement;
 
   function EffectListinGame(percent, obj) {
     for (let i = 1; i <= Math.floor(selectListEffectLength * percent); i++) {
@@ -166,13 +166,6 @@ function onloaded() {
   randomAll = Math.floor(Math.random() * listEffect.length);
   randomHasTime = Math.floor(Math.random() * listEffectHasTime.length);
   randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
-  function randomAppleEffect(listEffectType, random) {
-    listEffectType.forEach((effect, index) => {
-      if (index === random) {
-        document.querySelector(".game__apple").classList.add(`${effect.name}`);
-      }
-    });
-  }
   let startedScore = 0;
   startedScore = btoa(startedScore.toString());
   let highScore = localStorage.getItem("high-score") || startedScore;
@@ -287,7 +280,7 @@ function onloaded() {
     });
   }
 
-  let htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`;
+  let htmlMarkup;
   function initGame() {
     // check if rock position = food position -> creat new food
     rockList.forEach((rock) => {
@@ -411,6 +404,19 @@ function onloaded() {
     }
 
     boxGame.innerHTML = htmlMarkup;
+
+    function randomAppleEffect(listEffectType, random) {
+      listEffectType.forEach((effect, index) => {
+        if (index === random) {
+          if (document.querySelector(".game__apple")) {
+            appleElement = document.querySelector(".game__apple").classList;
+            if (appleElement){
+              appleElement.add(`${effect.name}`)
+            };
+          }
+        }
+      });
+    }
     //   set snake head color = yellowgreen
     let snakeLength = document.querySelectorAll(".game__snake");
     if (snakeLength.length === 1) {
