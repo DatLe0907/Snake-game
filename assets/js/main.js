@@ -1,54 +1,69 @@
-const main = document.querySelector(".main");
+const main = document.querySelector("#main");
+const themeSong = new Audio("./assets/audio/themesong.mp3");
+
+document.querySelector('.start__button').addEventListener('click',function(){
+  onloaded();
+  themeSong.play();
+})
+themeSong.addEventListener('ended', function() {
+  this.currentTime = 0;
+  this.play();
+}, false);
 
 function onloaded() {
   main.innerHTML = `
-  <div class="modal">
-        <div class="modal__overlay"></div>
-        <div class="modal__content">
-          <div class="content">
-            <img src="./assets/img/modal/trophy.jpeg" alt="" />
-            <h4 class="high-score"></h4>
-          </div>
-          <div class="content">
-            <img src="./assets/img/modal/star.jpg" alt="" />
-            <h4 class="score">Score: 0</h4>
-          </div>
-          <button>Play Again</button>
+  <div class="background">
+  </div>
+<div class="modal">
+    <div class="modal__overlay"></div>
+    <div class="modal__content">
+      <div class="content">
+        <img src="./assets/img/modal/trophy.jpeg" alt="" />
+        <h4 class="high-score"></h4>
+      </div>
+      <div class="content">
+        <img src="./assets/img/modal/star.jpg" alt="" />
+        <h4 class="score">Score: 0</h4>
+      </div>
+      <button>Play Again</button>
+    </div>
+  </div>
+  <div class="snake-box">
+      <div class="box__detail">
+        <h4 class="heading__high-score">Hight Score: 0</h4>
+        <div class = "heading__effect">
+          <h4 class="heading__effect-time"></h4>
+          <h4 class="heading__effect-time"></h4>
+          <h4 class="heading__effect-time"></h4>
         </div>
+        <h4 class="heading__current-score">Score: 0</h4>
       </div>
-      <div class="snake-box">
-          <div class="box__detail">
-            <h4 class="heading__high-score">Hight Score: 0</h4>
-            <div class = "heading__effect">
-              <h4 class="heading__effect-time"></h4>
-              <h4 class="heading__effect-time"></h4>
-              <h4 class="heading__effect-time"></h4>
-            </div>
-            <h4 class="heading__current-score">Score: 0</h4>
-          </div>
-          
-        <div class="wrapper">
-          <div class="box__game"></div>
-        </div>
-      </div>
-      <div class="control">
-        <button class="up">
-          <i class="fa-solid fa-chevron-up"></i>
-        </button>
-        <button class="down">
-          <i class="fa-solid fa-chevron-down"></i>
-        </button>
-        <button class="left">
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-        <button class="right">
-          <i class="fa-solid fa-chevron-right"></i>
-        </button>
-      </div>
-      <div class="footer">
-        <i>Source: Datle0907</i>
-        <span>From: Team IT07</span>
-      </div>`;
+      
+    <div class="wrapper">
+      <div class="box__game"></div>
+    </div>
+  </div>
+  <div class="control">
+    <button class="up">
+      <i class="fa-solid fa-chevron-up"></i>
+    </button>
+    <button class="down">
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <button class="left">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="right">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+  <div class="footer">
+    <i>Source: Datle0907</i>
+    <span>From: Team IT07</span>
+  </div>
+  `;
+
+  document.body.style.backgroundImage = 'url("./assets/img/block/jungle.jpg")';
 
   const boxGame = document.querySelector(".box__game");
   const scoreElement = document.querySelector(".heading__current-score");
@@ -79,26 +94,25 @@ function onloaded() {
   let gameOver = false;
   let modal = document.querySelector(".modal");
   let score = 0;
-  let random;
+  let randomAll;
+  let randomNoTime, randomHasTime;
 
-
-  let originSpeed = 100;
+  let originSpeed = 70;
   let speedEffect = originSpeed;
   let through = false;
   let flagEffect = false;
-
 
   let listChoose = [
     {
       name: "normal",
       point: 1,
-      percent: 70 / 100,
+      percent: 50 / 100,
       time: undefined,
     },
     {
       name: "gold",
       point: 10,
-      percent: 15 / 100,
+      percent: 20 / 100,
       time: undefined,
     },
     {
@@ -106,61 +120,53 @@ function onloaded() {
       time: 15,
       speed: speedEffect + Math.floor(speedEffect * (25 / 100)),
       point: 2,
-      percent: 10 / 100,
+      percent: 15 / 100,
     },
     {
       name: "invincible",
       time: 10,
       point: 5,
-      speed: speedEffect - Math.floor(speedEffect * (50 / 100)),
+      speed: speedEffect - Math.floor(speedEffect * (10 / 100)),
       through: true,
-      percent: 5 / 100,
+      percent: 15 / 100,
     },
   ];
   let listEffect = [];
   let selectListEffectLength = 100;
+
   function EffectListinGame(percent, obj) {
     for (let i = 1; i <= Math.floor(selectListEffectLength * percent); i++) {
       listEffect.unshift(obj);
     }
   }
 
-  
   listChoose.forEach((effect) => {
     EffectListinGame(effect.percent, effect);
   });
 
-  let listChooseEffectHasTime = listChoose.filter(effect => {
-    effect.time !== undefined
-  })
-
+  let listChooseEffectHasTime = listChoose.filter(
+    (time) => time.time !== undefined
+  );
 
   let listEffectHasTime = [],
-  listEffectNoTime = [];
-  listEffect.forEach(function(effect){
-    if(effect.time !== undefined){
-      listEffectHasTime.push(effect)
+    listEffectNoTime = [];
+  listEffect.forEach(function (effect) {
+    if (effect.time !== undefined) {
+      listEffectHasTime.push(effect);
+    } else {
+      listEffectNoTime.push(effect);
     }
-    else {
-      listEffectNoTime.push(effect)
-    }
-
-  })
-
-
-
-
-
+  });
 
   let effectTimeDisplayList = document.querySelectorAll(
     ".heading__effect .heading__effect-time"
   );
 
-
-
   // random effect index
-  function randomAppleEffect(listEffectType) {
-    random = Math.floor(Math.random() * listEffectType.length);
+  randomAll = Math.floor(Math.random() * listEffect.length);
+  randomHasTime = Math.floor(Math.random() * listEffectHasTime.length);
+  randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
+  function randomAppleEffect(listEffectType, random) {
     listEffectType.forEach((effect, index) => {
       if (index === random) {
         document.querySelector(".game__apple").classList.add(`${effect.name}`);
@@ -168,21 +174,23 @@ function onloaded() {
     });
   }
   let startedScore = 0;
-  startedScore = btoa(startedScore.toString())
+  startedScore = btoa(startedScore.toString());
   let highScore = localStorage.getItem("high-score") || startedScore;
-  highScore = Number(atob(highScore))
+  highScore = Number(atob(highScore));
   highScoreElement.innerText = `High Score: ${highScore}`;
   highScoreModal.innerText = `High Score: ${highScore}`;
 
   let intervalId;
   // Creat random rock position
-  (() => {
+  const randomRock = () => {
     for (let i = 0; i < 10; i++) {
       rockX = Math.floor(Math.random() * 30 + 1);
       rockY = Math.floor(Math.random() * 30 + 1);
       rockList.push([rockX, rockY]);
     }
-  })();
+  };
+
+  randomRock();
 
   // if rock spawn on snake -> hidden
   rockList.forEach(function (rock, index) {
@@ -211,6 +219,72 @@ function onloaded() {
         intervalId = setInterval(initGame, originSpeed);
         break;
     }
+  }
+
+  function effectActive(list) {
+    list.forEach((effect, index) => {
+      if (index === randomAll) {
+        for (let i = 1; i <= effect.point; i++) {
+          score++;
+          // if (score === 1) {
+          //   originSpeed -= Math.floor(originSpeed * (5 / 100));
+          //   newSpeed(2);
+          // }
+          // if (score === 5) {
+          //   originSpeed -= Math.floor(originSpeed * (8 / 100));
+          //   newSpeed(2);
+          // }
+          // if (score >= 10 && score % 10 === 0) {
+          //   if (originSpeed >= 50) {
+          //     originSpeed -= Math.floor(originSpeed * (10 / 100));
+          //   }
+          //   newSpeed(2);
+          // }
+        }
+        let timeEffect;
+        listChooseEffectHasTime.forEach((timeItem, index) => {
+          if (effect.time === timeItem.time) {
+            timeEffect = timeItem.time;
+            effectTimeDisplayList[
+              index
+            ].innerText = `${timeItem.name}-${timeEffect}s`;
+            let intervalItem = setInterval(() => {
+              if (timeEffect > 0) {
+                return (
+                  (flagEffect = true),
+                  timeEffect--,
+                  (effectTimeDisplayList[
+                    index
+                  ].innerText = `${timeItem.name}: ${timeEffect}s`)
+                );
+              }
+              if (timeEffect === 0 || timeEffect === undefined) {
+                newSpeed(2);
+                return (
+                  (flagEffect = false),
+                  timeEffect,
+                  (through = false),
+                  setTimeout(function () {
+                    effectTimeDisplayList[index].innerText = "";
+                  }, 500),
+                  clearInterval(intervalItem)
+                );
+              }
+            }, 1000);
+          }
+        });
+
+        if (timeEffect) {
+          if (effect.through) {
+            through = effect.through;
+          }
+          if (effect.speed) {
+            speedEffect = effect.speed;
+            newSpeed(1);
+          }
+        }
+      }
+    });
   }
 
   let htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`;
@@ -250,85 +324,33 @@ function onloaded() {
         case "invincible":
           audioEatingApple.play();
           audioInvincibleStart.play();
-          setTimeout(function(){
+          setTimeout(function () {
             audioInvincibleRun.play();
-          },700)
+          }, 700);
           break;
         default:
           audioEatingApple.play();
           break;
       }
-      listEffect.forEach((effect, index) => {
-        if (index === random) {
-          for(let i = 1; i <= effect.point; i++){
-            score++;
-            if(score === 1){
-              originSpeed -= Math.floor(originSpeed * (5 / 100));
-              newSpeed(2)
-            }
-            if(score === 5){
-              originSpeed -= Math.floor(originSpeed * (8 / 100));
-              newSpeed(2)
-            }
-            if(score >=10 && score % 10 === 0){
-               if(originSpeed>=50){
-                originSpeed -= Math.floor(originSpeed * (10 / 100));
-               }
-               newSpeed(2);
-            }
-          }
-          let timeEffect;
-          listEffect.forEach((timeItem, index) => {
-                timeEffect = timeItem.time;
-                effectTimeDisplayList[
-                  index
-                ].innerText = `${timeItem.name}-${timeEffect}s`;
-                let intervalItem = setInterval(() => {
-                  if (timeEffect > 0) {
-                    return (
-                      timeEffect--,
-                      (effectTimeDisplayList[
-                        index
-                      ].innerText = `${timeItem.name}: ${timeEffect}s`)
-                    );
-                  }
-                  if (timeEffect === 0 || timeEffect === undefined) {
-                    newSpeed(2);
-                    setTimeout(function () {
-                      effectTimeDisplayList[index].innerText = "";
-                    }, 500);
-                    return (
-                      timeEffect, (through = false),flagEffect = false, clearInterval(intervalItem)
-                    );
-                  }
-                }, 1000);
-  
 
-              if (timeEffect) {
-                if (effect.through) {
-                  through = effect.through;
-                }
-                if (effect.speed) {
-                  speedEffect = effect.speed;
-                  newSpeed(1);
-                }
-              }
-          });
-          
-          
+      if (flagEffect === true) {
+        effectActive(listEffectNoTime);
+      } else {
+        effectActive(listEffect);
+      }
 
-        }
-      });
+      randomAll = Math.floor(Math.random() * listEffect.length);
+      randomHasTime = Math.floor(Math.random() * listEffectHasTime.length);
+      randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
 
       randomFoodPosition();
-      random = Math.floor(Math.random() * listEffect.length);
 
       // random apple effect
       snakeBody.push([foodX, foodY]);
 
       // while high score > score -> high score = score;
       highScore = score > highScore ? score : highScore;
-      let encodedHighScore  = btoa(highScore.toString());
+      let encodedHighScore = btoa(highScore.toString());
       localStorage.setItem("high-score", encodedHighScore);
       scoreElement.innerText = `Score: ${score}`;
       highScoreElement.innerText = `High Score: ${highScore}`;
@@ -368,7 +390,7 @@ function onloaded() {
     });
 
     //   if snake reach wall -> game over
-    if (snakeX < 1 || snakeX > 30 || snakeY < 1 || snakeY > 30) {
+    if (snakeX < 0.75 || snakeX > 30.75 || snakeY < 0.75 || snakeY > 30.75) {
       if (through === false) {
         audioHurt.play();
         gameOver = true;
@@ -389,18 +411,17 @@ function onloaded() {
     }
 
     boxGame.innerHTML = htmlMarkup;
-      //   set snake head color = yellowgreen
-      let snakeLength = document.querySelectorAll(".game__snake");
-      if (snakeLength.length === 1) {
-        snakeLength[0].style.filter = "brightness(120%)";
-      }
-      // if(flagEffect === true){
-      //   randomAppleEffect(listEffectNoTime)
-      // }
-      // else {
-      // }
-      randomAppleEffect(listEffect)
+    //   set snake head color = yellowgreen
+    let snakeLength = document.querySelectorAll(".game__snake");
+    if (snakeLength.length === 1) {
+      snakeLength[0].style.filter = "brightness(120%)";
+    }
 
+    if (flagEffect === true) {
+      randomAppleEffect(listEffectNoTime, randomNoTime);
+    } else {
+      randomAppleEffect(listEffect, randomAll);
+    }
 
     if (gameOver) {
       handleGameOver();
@@ -447,14 +468,18 @@ function onloaded() {
     clearInterval(intervalId);
     modal.classList.add("show");
     replayBtn.addEventListener("click", function (e) {
-      location.reload();
       modal.classList.remove("show");
+      clearInterval(intervalId);
+      randomAppleEffect(listEffect, randomAll);
+      onloaded();
     });
     if (modal.classList.contains("show")) {
       document.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
-          location.reload();
           modal.classList.remove("show");
+          randomAppleEffect(listEffect, randomAll);
+          clearInterval(intervalId);
+          onloaded();
         }
       });
     }
