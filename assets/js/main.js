@@ -470,14 +470,12 @@ function onloaded() {
     replayBtn.addEventListener("click", function (e) {
       modal.classList.remove("show");
       clearInterval(intervalId);
-      randomAppleEffect(listEffect, randomAll);
       onloaded();
     });
     if (modal.classList.contains("show")) {
       document.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
           modal.classList.remove("show");
-          randomAppleEffect(listEffect, randomAll);
           clearInterval(intervalId);
           onloaded();
         }
