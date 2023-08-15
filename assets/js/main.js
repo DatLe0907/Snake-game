@@ -1,10 +1,53 @@
-const main = document.querySelector("#main");
+const main = document.getElementById('main');
 const themeSong = new Audio("./assets/audio/themesong.mp3");
 
-document.querySelector(".start__button").addEventListener("click", function () {
+let snakeX,snakeY;
+let foodX,foodY;
+let velocityX,velocityY;
+let rockX, rockY;
+let rockCount;
+let rockList;
+let appleElement;
+
+let snakeBody;
+let gameOver;
+let modal = document.querySelector(".modal");
+let score;
+let randomAll;
+let randomNoTime;
+
+let originSpeed;
+let speedEffect;
+let through;
+let flagEffect;
+
+
+
+// Nhấn vào start btn -> chạy nhạc và bắt đầu chạy game
+let startButton = document.querySelector(".start__button");
+
+function handleStartButtonClick() {
   themeSong.play();
   onloaded();
-});
+
+  // Remove event listener for "Enter" key
+  document.removeEventListener("keydown", handleKeyDown);
+}
+
+function handleKeyDown(e) {
+  if (e.key === "Enter") {
+    themeSong.play();
+    onloaded();
+    document.removeEventListener("keydown", handleKeyDown);
+  }
+}
+
+if (startButton !== null) {
+  startButton.addEventListener("click", handleStartButtonClick);
+  document.addEventListener("keydown", handleKeyDown);
+}
+
+// khi nhạc kết thúc -> restart
 themeSong.addEventListener(
   "ended",
   function () {
@@ -14,6 +57,7 @@ themeSong.addEventListener(
   false
 );
 
+// hàm bắt đầu game
 function onloaded() {
   main.innerHTML = `
   <div class="background">
@@ -67,6 +111,7 @@ function onloaded() {
   </div>
   `;
 
+  // sau khi ấn start game thay đổi background
   document.body.style.backgroundImage = 'url("./assets/img/block/jungle.jpg")';
 
   const boxGame = document.querySelector(".box__game");
@@ -77,6 +122,7 @@ function onloaded() {
   const replayBtn = document.querySelector(".modal__content button");
   const controlBtn = document.querySelectorAll(".control button");
 
+  // audio
   const audioEatingApple = new Audio("./assets/audio/biting-into-an-apple.mp3");
   const audioGold = new Audio("./assets/audio/gold.mp3");
   const audioSlow = new Audio("./assets/audio/slow.mp3");
@@ -84,60 +130,86 @@ function onloaded() {
   const audioInvincibleRun = new Audio("./assets/audio/invincible-run.mp3");
   const audioHurt = new Audio("./assets/audio/umph.mp3");
 
-  let snakeX = 15,
-    snakeY = 15;
-  let foodX = Math.floor(Math.random() * 30 + 1),
-    foodY = Math.floor(Math.random() * 30 + 1);
-  let velocityX = 0,
-    velocityY = 0;
-  let rockX, rockY;
-  let rockList = [];
 
-  let snakeBody = [];
-  let gameOver = false;
-  let modal = document.querySelector(".modal");
-  let score = 0;
+  let snakeX,snakeY;
+  let foodX,foodY;
+  let velocityX,velocityY;
+  let rockCount;
+  let rockList;
+  let appleElement;
+  
+  let snakeBody;
+  let gameOver;
+  let modal = document.querySelector(".modal");;
+  let score;
   let randomAll;
-  let randomNoTime, randomHasTime;
+  let randomNoTime;
+  
+  let originSpeed;
+  let speedEffect;
+  let through;
+  let flagEffect;
 
-  let originSpeed = 70;
-  let speedEffect = originSpeed;
-  let through = false;
-  let flagEffect = false;
+snakeX = 15;
+snakeY = 15;
+foodX = Math.floor(Math.random() * 30 + 1);
+foodY = Math.floor(Math.random() * 30 + 1);
+velocityX = 0,
+velocityY = 0;
+rockX = null, rockY = null;
+rockCount = Math.floor((30 * 10) / 30);
+rockList = [];
+appleElement = null;
 
-  let listChoose = [
-    {
-      name: "normal",
-      point: 1,
-      percent: 50 / 100,
-      time: undefined,
-    },
-    {
-      name: "gold",
-      point: 5,
-      percent: 20 / 100,
-      time: undefined,
-    },
-    {
-      name: "slow",
-      time: 15,
-      speed: speedEffect + Math.floor(speedEffect * (25 / 100)),
-      point: 2,
-      percent: 15 / 100,
-    },
-    {
-      name: "invincible",
-      time: 10,
-      point: 5,
-      speed: speedEffect - Math.floor(speedEffect * (10 / 100)),
-      through: true,
-      percent: 15 / 100,
-    },
+snakeBody = [];
+gameOver = false;
+score = 0;
+randomAll = null;
+randomNoTime = null;
+
+originSpeed = 70;
+speedEffect = originSpeed;
+through = false;
+flagEffect = false;
+
+const listChoose = [
+  {
+    name: "normal",
+    point: 1,
+    percent: 50 / 100,
+    time: undefined,
+  },
+  {
+    name: "gold",
+    point: 5,
+    percent: 20 / 100,
+    time: undefined,
+  },
+  {
+    name: "slow",
+    time: 15,
+    speed: speedEffect + Math.floor(speedEffect * (25 / 100)),
+    point: 2,
+    percent: 15 / 100,
+  },
+  {
+    name: "invincible",
+    time: 10,
+    point: 5,
+    speed: speedEffect - Math.floor(speedEffect * (10 / 100)),
+    through: true,
+    percent: 15 / 100,
+  },
   ];
+
+  // mảng choose loại bỏ các effect k có time
+  let listChooseEffectHasTime = listChoose.filter(
+    (time) => time.time !== undefined
+  );
+
   let listEffect = [];
   let selectListEffectLength = 100;
-  let appleElement;
-
+  // tạo 1 mảng dựa vào % của  các phần tử trong mảng listChoose
   function EffectListinGame(percent, obj) {
     for (let i = 1; i <= Math.floor(selectListEffectLength * percent); i++) {
       listEffect.unshift(obj);
@@ -148,16 +220,10 @@ function onloaded() {
     EffectListinGame(effect.percent, effect);
   });
 
-  let listChooseEffectHasTime = listChoose.filter(
-    (time) => time.time !== undefined
-  );
-
-  let listEffectHasTime = [],
-    listEffectNoTime = [];
+  // chia list effect thành 2 loại: không giới hạn thời gian và giới hạn thời gian
+  let listEffectNoTime = [];
   listEffect.forEach(function (effect) {
-    if (effect.time !== undefined) {
-      listEffectHasTime.push(effect);
-    } else {
+    if (effect.time === undefined) {
       listEffectNoTime.push(effect);
     }
   });
@@ -165,42 +231,6 @@ function onloaded() {
   let effectTimeDisplayList = document.querySelectorAll(
     ".heading__effect .heading__effect-time"
   );
-
-  // random effect index
-  randomAll = Math.floor(Math.random() * listEffect.length);
-  randomHasTime = Math.floor(Math.random() * listEffectHasTime.length);
-  randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
-  let startedScore = 0;
-  startedScore = btoa(startedScore.toString());
-  let highScore = localStorage.getItem("high-score") || startedScore;
-  highScore = Number(atob(highScore));
-  highScoreElement.innerText = `High Score: ${highScore}`;
-  highScoreModal.innerText = `High Score: ${highScore}`;
-
-  let intervalId;
-  // Creat random rock position
-  const randomRock = () => {
-    for (let i = 0; i < 10; i++) {
-      rockX = Math.floor(Math.random() * 30 + 1);
-      rockY = Math.floor(Math.random() * 30 + 1);
-      rockList.push([rockX, rockY]);
-    }
-  };
-
-  randomRock();
-
-  // if rock spawn on snake -> hidden
-  rockList.forEach(function (rock, index) {
-    if (rock[0] === snakeX && rock[1] === snakeY) {
-      rockList.splice(index, 1);
-    }
-  });
-
-  // creat random food if food position
-  const randomFoodPosition = () => {
-    foodX = Math.floor(Math.random() * 30) + 1;
-    foodY = Math.floor(Math.random() * 30) + 1;
-  };
 
   //hàm để xóa hàm init cũ và gọi lại  hàm để cập nhật speed //----NOTE
   function newSpeed(type) {
@@ -218,25 +248,62 @@ function onloaded() {
     }
   }
 
-  function effectActive(list) {
+  // random effect index
+  randomAll = Math.floor(Math.random() * listEffect.length);
+  randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
+  let startedScore = 0;
+  startedScore = btoa(startedScore.toString());
+  let highScore = localStorage.getItem("high-score") || startedScore;
+  highScore = Number(atob(highScore));
+  highScoreElement.innerText = `High Score: ${highScore}`;
+  highScoreModal.innerText = `High Score: ${highScore}`;
+
+  let intervalId;
+  let timeOutId;
+  // random tọa độ của đá
+  const randomRock = () => {
+    for (let i = 0; i < rockCount; i++) {
+      rockX = Math.floor(Math.random() * 30 + 1);
+      rockY = Math.floor(Math.random() * 30 + 1);
+      rockList.push([rockX, rockY]);
+    }
+  };
+
+  randomRock();
+
+  // nếu đá spawn trên rắn thì xóa tảng đá đó đi
+  rockList.forEach(function (rock, index) {
+    if (rock[0] === snakeX && rock[1] === snakeY) {
+      rockList.splice(index, 1);
+    }
+  });
+
+  // random tọa độ của táo
+  const randomFoodPosition = () => {
+    foodX = Math.floor(Math.random() * 30) + 1;
+    foodY = Math.floor(Math.random() * 30) + 1;
+  };
+
+  // kiểm tra xem random có trùng với index không, nếu có thì add class theo tên của effect thứ index
+  function displayAppleEffect(listEffectType, random) {
+    listEffectType.forEach((effect, index) => {
+      if (index === random) {
+        if (document.querySelector(".game__apple")) {
+          appleElement = document.querySelector(".game__apple").classList;
+          if (appleElement) {
+            appleElement.add(`${effect.name}`);
+          }
+        }
+      }
+    });
+  }
+
+  //  áp dụng thuộc tính của effect;
+  function effectActive(list, random) {
     list.forEach((effect, index) => {
-      if (index === randomAll) {
+      if (index === random) {
         for (let i = 1; i <= effect.point; i++) {
           score++;
-          // if (score === 1) {
-          //   originSpeed -= Math.floor(originSpeed * (5 / 100));
-          //   newSpeed(2);
-          // }
-          // if (score === 5) {
-          //   originSpeed -= Math.floor(originSpeed * (8 / 100));
-          //   newSpeed(2);
-          // }
-          // if (score >= 10 && score % 10 === 0) {
-          //   if (originSpeed >= 50) {
-          //     originSpeed -= Math.floor(originSpeed * (10 / 100));
-          //   }
-          //   newSpeed(2);
-          // }
         }
         let timeEffect;
         listChooseEffectHasTime.forEach((timeItem, index) => {
@@ -261,13 +328,25 @@ function onloaded() {
                   (flagEffect = false),
                   timeEffect,
                   (through = false),
-                  setTimeout(function () {
+                  (timeOutId = setTimeout(function () {
                     effectTimeDisplayList[index].innerText = "";
-                  }, 500),
+                  }, 500)),
                   clearInterval(intervalItem)
                 );
               }
             }, 1000);
+            replayBtn.addEventListener("click", function (e) {
+              clearTimeout(timeOutId);
+              clearInterval(intervalItem);
+            });
+            if (modal.classList.contains("show")) {
+              document.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                  clearTimeout(timeOutId);
+                  clearInterval(intervalItem);
+                }
+              });
+            }
           }
         });
 
@@ -286,7 +365,7 @@ function onloaded() {
 
   let htmlMarkup;
   function initGame() {
-    // check if rock position = food position -> creat new food
+    // nếu tọa độ của food trùng với tọa độ của đá-> tạo quả táo khác
     rockList.forEach((rock) => {
       if ((foodX !== rock[0], foodY !== rock[1])) {
         htmlMarkup = `<div class="game__apple" style = 'grid-area: ${foodY} / ${foodX}'><div class = 'apple'></div></div>`;
@@ -294,18 +373,22 @@ function onloaded() {
         randomFoodPosition();
       }
     });
-    //   create rock
+    // hiển thị đá ra
     rockList.forEach(function (rock) {
       htmlMarkup += ` <div class = "rock" style = 'grid-area: ${rock[1]} / ${rock[0]}'></div>`;
     });
-    //   shift snake body
+    // lùi tọa độ body của con rắn về 1 index
     for (let i = snakeBody.length - 1; i > 0; i--) {
       snakeBody[i] = snakeBody[i - 1];
     }
+
+    // gán tọa độ cho đầu là giá trị mặc định
     snakeBody[0] = [snakeX, snakeY];
 
-    //   if food has eaten -> snake length + 1
+    // khi rắn ăn táo điểm +1
     if (snakeX === foodX && snakeY === foodY) {
+      
+      // check class để xác định effect, tùy từng effect sẽ phát ra các âm thanh khác nhau
       switch (document.querySelector(".game__apple").classList[1]) {
         case "normal":
           audioEatingApple.play();
@@ -329,17 +412,14 @@ function onloaded() {
           audioEatingApple.play();
           break;
       }
-
+      // nếu đang có hiệu ứng thì sẽ áp dụng hiệu ứng không giới hạn thời gian, ngược lại thì áp dụng tất cả các hiệu ứng
       if (flagEffect === true) {
-        effectActive(listEffectNoTime);
+        effectActive(listEffectNoTime, randomNoTime);
       } else {
-        effectActive(listEffect);
+        effectActive(listEffect, randomAll);
       }
 
-      randomAll = Math.floor(Math.random() * listEffect.length);
-      randomHasTime = Math.floor(Math.random() * listEffectHasTime.length);
-      randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
-
+      // spawn táo
       randomFoodPosition();
 
       // random apple effect
@@ -355,14 +435,14 @@ function onloaded() {
       highScoreModal.innerText = `High Score: ${highScore}`;
     }
 
-    // update snake head position
+    // cập nhật tọa độ đầu rắn
     snakeX += velocityX;
     snakeY += velocityY;
 
     for (let i = 0; i < snakeBody.length; i++) {
-      // Adding a div for each part of the snake's body
+      // Thêm một div cho mỗi phần body của con rắn
       htmlMarkup += `<div class="game__snake" style="grid-area: ${snakeBody[i][1]} / ${snakeBody[i][0]};"></div>`;
-      // if snake head reach snake body -> game over
+      // nếu con rắn tự đụng vào body thì game over,nếu through = true thì k sao
       if (
         i != 0 &&
         snakeBody[0][1] === snakeBody[i][1] &&
@@ -371,12 +451,11 @@ function onloaded() {
         if (through === false) {
           audioHurt.play();
           gameOver = true;
-        } else {
         }
       }
     }
 
-    //   if snake reach rock -> game over
+    //   nếu rắn đụng vào đá thì game over,nếu through = true thì k sao
     rockList.forEach(function (rock) {
       if (snakeX === rock[0] && snakeY === rock[1]) {
         if (through === false) {
@@ -386,12 +465,13 @@ function onloaded() {
       }
     });
 
-    //   if snake reach wall -> game over
+    //   nếu rắn đụng vào tường thì game over,nếu through = true thì k sao
     if (snakeX < 0.75 || snakeX > 30.75 || snakeY < 0.75 || snakeY > 30.75) {
       if (through === false) {
         audioHurt.play();
         gameOver = true;
       } else {
+        // nếu con rắn ra khỏi map-> teleport
         if (snakeX === 0) {
           snakeX = 30;
         }
@@ -409,34 +489,28 @@ function onloaded() {
 
     boxGame.innerHTML = htmlMarkup;
 
-    function randomAppleEffect(listEffectType, random) {
-      listEffectType.forEach((effect, index) => {
-        if (index === random) {
-          if (document.querySelector(".game__apple")) {
-            appleElement = document.querySelector(".game__apple").classList;
-            if (appleElement) {
-              appleElement.add(`${effect.name}`);
-            }
-          }
-        }
-      });
-    }
     //   set snake head color = yellowgreen
     let snakeLength = document.querySelectorAll(".game__snake");
     if (snakeLength.length === 1) {
       snakeLength[0].style.filter = "brightness(120%)";
     }
-
+    // nếu đang có hiệu ứng thì sẽ hiển thị hiệu ứng không giới hạn thời gian, ngược lại thì hiển thị tất cả các hiệu ứng
     if (flagEffect === true) {
-      randomAppleEffect(listEffectNoTime, randomNoTime);
+      displayAppleEffect(listEffectNoTime, randomNoTime);
     } else {
-      randomAppleEffect(listEffect, randomAll);
+      displayAppleEffect(listEffect, randomAll);
     }
 
     if (gameOver) {
       handleGameOver();
     }
   }
+
+
+  // random lại effect index mới
+  randomAll = Math.floor(Math.random() * listEffect.length);
+  randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
+  
 
   document.addEventListener("keydown", function (e) {
     // change velocity when key down
@@ -472,22 +546,50 @@ function onloaded() {
       }
     });
   });
+
   intervalId = setInterval(initGame, speedEffect);
   // Game over
+  let replayCount = 0;
   const handleGameOver = () => {
     clearInterval(intervalId);
     modal.classList.add("show");
+  
     replayBtn.addEventListener("click", function (e) {
+      // replayCount++;
+      // if (replayCount === 3) {
+      //   setTimeout(function(){
+      //     document.body.style = "background-color: #fff";
+      //     main.innerHTML = '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>';
+      //    },10)
+      //   setTimeout(function () {
+      //     location.reload();
+      //   }, 1500);
+      // } else {
+      //   modal.classList.remove("show");
+      //   onloaded();
+      // }
       modal.classList.remove("show");
-      clearInterval(intervalId);
       onloaded();
     });
+  
     if (modal.classList.contains("show")) {
       document.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
+          // replayCount++;
+          // if (replayCount === 3) {
+          //  setTimeout(function(){
+          //   document.body.style = "background-color: #fff";
+          //   main.innerHTML = '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>';
+          //  },10)
+          //   setTimeout(function () {
+          //     location.reload();
+          //   }, 5000);
+          // } else {
+          //   modal.classList.remove("show");
+          //   onloaded();
+          // }
           modal.classList.remove("show");
-          clearInterval(intervalId);
-          onloaded();
+      onloaded();
         }
       });
     }
