@@ -1,34 +1,12 @@
-const main = document.getElementById('main');
+const main = document.getElementById("main");
 const themeSong = new Audio("./assets/audio/themesong.mp3");
-
-let snakeX,snakeY;
-let foodX,foodY;
-let velocityX,velocityY;
-let rockX, rockY;
-let rockCount;
-let rockList;
-let appleElement;
-
-let snakeBody;
-let gameOver;
-let modal = document.querySelector(".modal");
-let score;
-let randomAll;
-let randomNoTime;
-
-let originSpeed;
-let speedEffect;
-let through;
-let flagEffect;
-
-
 
 // Nhấn vào start btn -> chạy nhạc và bắt đầu chạy game
 let startButton = document.querySelector(".start__button");
 
 function handleStartButtonClick() {
   themeSong.play();
-  onloaded();
+  startGame();
 
   // Remove event listener for "Enter" key
   document.removeEventListener("keydown", handleKeyDown);
@@ -37,7 +15,7 @@ function handleStartButtonClick() {
 function handleKeyDown(e) {
   if (e.key === "Enter") {
     themeSong.play();
-    onloaded();
+    startGame();
     document.removeEventListener("keydown", handleKeyDown);
   }
 }
@@ -58,7 +36,7 @@ themeSong.addEventListener(
 );
 
 // hàm bắt đầu game
-function onloaded() {
+function startGame() {
   main.innerHTML = `
   <div class="background">
   </div>
@@ -130,76 +108,56 @@ function onloaded() {
   const audioInvincibleRun = new Audio("./assets/audio/invincible-run.mp3");
   const audioHurt = new Audio("./assets/audio/umph.mp3");
 
-
-  let snakeX,snakeY;
-  let foodX,foodY;
-  let velocityX,velocityY;
-  let rockCount;
-  let rockList;
+  let snakeX = 15;
+  let snakeY = 15;
+  let foodX = Math.floor(Math.random() * 30 + 1);
+  let foodY = Math.floor(Math.random() * 30 + 1);
+  let velocityX = 0;
+  let velocityY = 0;
+  let rockX, rockY;
+  let rockCount = Math.floor((30 * 10) / 30);
+  let rockList = [];
   let appleElement;
-  
-  let snakeBody;
-  let gameOver;
-  let modal = document.querySelector(".modal");;
-  let score;
-  let randomAll;
-  let randomNoTime;
-  
-  let originSpeed;
-  let speedEffect;
-  let through;
-  let flagEffect;
 
-snakeX = 15;
-snakeY = 15;
-foodX = Math.floor(Math.random() * 30 + 1);
-foodY = Math.floor(Math.random() * 30 + 1);
-velocityX = 0,
-velocityY = 0;
-rockX = null, rockY = null;
-rockCount = Math.floor((30 * 10) / 30);
-rockList = [];
-appleElement = null;
+  let snakeBody = [];
+  let gameOver = false;
+  let score = 0;
 
-snakeBody = [];
-gameOver = false;
-score = 0;
-randomAll = null;
-randomNoTime = null;
+  let originSpeed = 70;
+  let speedEffect = originSpeed;
+  let through = false;
+  let flagEffect = false;
 
-originSpeed = 70;
-speedEffect = originSpeed;
-through = false;
-flagEffect = false;
+  let modal = document.querySelector(".modal");
 
-const listChoose = [
-  {
-    name: "normal",
-    point: 1,
-    percent: 50 / 100,
-    time: undefined,
-  },
-  {
-    name: "gold",
-    point: 5,
-    percent: 20 / 100,
-    time: undefined,
-  },
-  {
-    name: "slow",
-    time: 15,
-    speed: speedEffect + Math.floor(speedEffect * (25 / 100)),
-    point: 2,
-    percent: 15 / 100,
-  },
-  {
-    name: "invincible",
-    time: 10,
-    point: 5,
-    speed: speedEffect - Math.floor(speedEffect * (10 / 100)),
-    through: true,
-    percent: 15 / 100,
-  },
+  const listChoose = [
+    {
+      name: "normal",
+      point: 1,
+      percent: 50 / 100,
+      time: undefined,
+    },
+    {
+      name: "gold",
+      point: 5,
+      percent: 20 / 100,
+      time: undefined,
+    },
+    {
+      name: "slow",
+      time: 15,
+      speed: speedEffect + Math.floor(speedEffect * (25 / 100)),
+      point: 2,
+      percent: 15 / 100,
+    },
+    {
+      name: "invincible",
+      time: 10,
+      point: 5,
+      speed: speedEffect - Math.floor(speedEffect * (10 / 100)),
+      through: true,
+      percent: 15 / 100,
+    },
   ];
 
   // mảng choose loại bỏ các effect k có time
@@ -248,9 +206,6 @@ const listChoose = [
     }
   }
 
-  // random effect index
-  randomAll = Math.floor(Math.random() * listEffect.length);
-  randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
   let startedScore = 0;
   startedScore = btoa(startedScore.toString());
   let highScore = localStorage.getItem("high-score") || startedScore;
@@ -259,7 +214,7 @@ const listChoose = [
   highScoreModal.innerText = `High Score: ${highScore}`;
 
   let intervalId;
-  let timeOutId;
+  let intervalItem;
   // random tọa độ của đá
   const randomRock = () => {
     for (let i = 0; i < rockCount; i++) {
@@ -312,7 +267,7 @@ const listChoose = [
             effectTimeDisplayList[
               index
             ].innerText = `${timeItem.name}-${timeEffect}s`;
-            let intervalItem = setInterval(() => {
+            intervalItem = setInterval(() => {
               if (timeEffect > 0) {
                 return (
                   (flagEffect = true),
@@ -335,18 +290,6 @@ const listChoose = [
                 );
               }
             }, 1000);
-            replayBtn.addEventListener("click", function (e) {
-              clearTimeout(timeOutId);
-              clearInterval(intervalItem);
-            });
-            if (modal.classList.contains("show")) {
-              document.addEventListener("keydown", function (e) {
-                if (e.key === "Enter") {
-                  clearTimeout(timeOutId);
-                  clearInterval(intervalItem);
-                }
-              });
-            }
           }
         });
 
@@ -387,7 +330,6 @@ const listChoose = [
 
     // khi rắn ăn táo điểm +1
     if (snakeX === foodX && snakeY === foodY) {
-      
       // check class để xác định effect, tùy từng effect sẽ phát ra các âm thanh khác nhau
       switch (document.querySelector(".game__apple").classList[1]) {
         case "normal":
@@ -407,6 +349,7 @@ const listChoose = [
           setTimeout(function () {
             audioInvincibleRun.play();
           }, 700);
+
           break;
         default:
           audioEatingApple.play();
@@ -418,6 +361,10 @@ const listChoose = [
       } else {
         effectActive(listEffect, randomAll);
       }
+
+      // random effect index
+      randomAll = Math.floor(Math.random() * listEffect.length);
+      randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
 
       // spawn táo
       randomFoodPosition();
@@ -506,92 +453,73 @@ const listChoose = [
     }
   }
 
-
   // random lại effect index mới
   randomAll = Math.floor(Math.random() * listEffect.length);
   randomNoTime = Math.floor(Math.random() * listEffectNoTime.length);
-  
 
-  document.addEventListener("keydown", function (e) {
-    // change velocity when key down
-    if ((e.key === "ArrowUp" || e.key === "w") && velocityY != 1) {
-      velocityX = 0;
-      velocityY = -1;
-    } else if ((e.key === "ArrowDown" || e.key === "s") && velocityY != -1) {
-      velocityX = 0;
-      velocityY = 1;
-    } else if ((e.key === "ArrowLeft" || e.key === "a") && velocityX != 1) {
-      velocityX = -1;
-      velocityY = 0;
-    } else if ((e.key === "ArrowRight" || e.key === "d") && velocityX != -1) {
-      velocityX = 1;
-      velocityY = 0;
-    }
-  });
-
-  controlBtn.forEach(function (btn) {
-    btn.addEventListener("click", function (e) {
-      if (this.classList[0] === "up" && velocityY != 1) {
+  function handleKeyPress() {
+    document.addEventListener("keydown", function (e) {
+      // change velocity when key down
+      if ((e.key === "ArrowUp" || e.key === "w") && velocityY != 1) {
         velocityX = 0;
         velocityY = -1;
-      } else if (this.classList[0] === "down" && velocityY != -1) {
+      } else if ((e.key === "ArrowDown" || e.key === "s") && velocityY != -1) {
         velocityX = 0;
         velocityY = 1;
-      } else if (this.classList[0] === "left" && velocityX != 1) {
+      } else if ((e.key === "ArrowLeft" || e.key === "a") && velocityX != 1) {
         velocityX = -1;
         velocityY = 0;
-      } else if (this.classList[0] === "right" && velocityX != -1) {
+      } else if ((e.key === "ArrowRight" || e.key === "d") && velocityX != -1) {
         velocityX = 1;
         velocityY = 0;
       }
     });
-  });
+
+    controlBtn.forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        if (this.classList[0] === "up" && velocityY != 1) {
+          velocityX = 0;
+          velocityY = -1;
+        } else if (this.classList[0] === "down" && velocityY != -1) {
+          velocityX = 0;
+          velocityY = 1;
+        } else if (this.classList[0] === "left" && velocityX != 1) {
+          velocityX = -1;
+          velocityY = 0;
+        } else if (this.classList[0] === "right" && velocityX != -1) {
+          velocityX = 1;
+          velocityY = 0;
+        }
+      });
+    });
+  }
+
+  handleKeyPress();
 
   intervalId = setInterval(initGame, speedEffect);
   // Game over
-  let replayCount = 0;
+
   const handleGameOver = () => {
     clearInterval(intervalId);
     modal.classList.add("show");
-  
-    replayBtn.addEventListener("click", function (e) {
-      // replayCount++;
-      // if (replayCount === 3) {
-      //   setTimeout(function(){
-      //     document.body.style = "background-color: #fff";
-      //     main.innerHTML = '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>';
-      //    },10)
-      //   setTimeout(function () {
-      //     location.reload();
-      //   }, 1500);
-      // } else {
-      //   modal.classList.remove("show");
-      //   onloaded();
-      // }
-      modal.classList.remove("show");
-      onloaded();
-    });
-  
-    if (modal.classList.contains("show")) {
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-          // replayCount++;
-          // if (replayCount === 3) {
-          //  setTimeout(function(){
-          //   document.body.style = "background-color: #fff";
-          //   main.innerHTML = '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>';
-          //  },10)
-          //   setTimeout(function () {
-          //     location.reload();
-          //   }, 5000);
-          // } else {
-          //   modal.classList.remove("show");
-          //   onloaded();
-          // }
-          modal.classList.remove("show");
-      onloaded();
-        }
-      });
+
+    function replayGame(e) {
+      if (e.type === "click" || e.key === "Enter") {
+        modal.classList.remove("show");
+        startGame();
+        removeEventListeners();
+      }
+    }
+
+    replayBtn.addEventListener("click", replayGame);
+    document.addEventListener("keydown", replayGame);
+
+    function removeEventListeners() {
+      replayBtn.removeEventListener("click", replayGame);
+      document.removeEventListener("keydown", replayGame);
+      document.removeEventListener("keydown", handleKeyPress);
+      document.addEventListener("keydown", handleKeyPress);
     }
   };
+  return (gameOver = false);
 }

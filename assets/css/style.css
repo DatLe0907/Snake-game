@@ -10,14 +10,15 @@
 }
 
 :root {
-  --primary-color: #228B22
+  --primary-color: #228b22;
 }
 
 html {
   font-size: 62.5%;
   font-family: "Minecraftia", sans-serif;
   color: #fff;
-  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-cursor-1-32x32.png), default!important;
+  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-cursor-1-32x32.png),
+    default !important;
 }
 
 body {
@@ -52,7 +53,8 @@ body {
   font-weight: 500;
   border: none;
   outline: none;
-  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-pointer-32x32.png), pointer!important;
+  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-pointer-32x32.png),
+    pointer !important;
 }
 
 .start__button:hover {
@@ -68,42 +70,6 @@ body {
   position: relative;
 }
 
-.lds-ring {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border: 8px solid var(--primary-color);
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: var(--primary-color) transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 .snake-box {
   width: 80vmin;
   height: 80vmin;
@@ -117,7 +83,8 @@ body {
   background-image: url("../img/block/dirt.jpg");
   background-size: contain;
   z-index: 5;
-  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-cursor-1-32x32.png), default!important;
+  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-cursor-1-32x32.png),
+    default !important;
 }
 
 .wrapper {
@@ -175,7 +142,7 @@ body {
   box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px,
     rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
     rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
-    z-index: 3;
+  z-index: 3;
 }
 
 .game__apple {
@@ -249,7 +216,8 @@ body {
   position: absolute;
   background-color: transparent;
   padding: 12px 14px;
-  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-pointer-32x32.png), pointer!important;
+  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-pointer-32x32.png),
+    pointer !important;
   border: solid 1px #fff;
   color: #fff;
 }
@@ -337,7 +305,8 @@ body {
   box-shadow: 5px 5px 0 #000;
   border: none;
   outline: none;
-  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-pointer-32x32.png), pointer!important;
+  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-pointer-32x32.png),
+    pointer !important;
 }
 
 .modal__content button:hover {
@@ -373,7 +342,6 @@ body {
 
 /* Tablet */
 @media (min-width: 485px) and (max-width: 1023px) {
-
   .modal__content {
     top: 10%;
   }
@@ -398,7 +366,6 @@ body {
     right: 10%;
   }
 }
-
 
 /* Mobile */
 @media (max-width: 484px) {
