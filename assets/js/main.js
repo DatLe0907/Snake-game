@@ -1,14 +1,18 @@
 const main = document.querySelector("#main");
 const themeSong = new Audio("./assets/audio/themesong.mp3");
 
-document.querySelector('.start__button').addEventListener('click',function(){
+document.querySelector(".start__button").addEventListener("click", function () {
   themeSong.play();
   onloaded();
-})
-themeSong.addEventListener('ended', function() {
-  this.currentTime = 0;
-  this.play();
-}, false);
+});
+themeSong.addEventListener(
+  "ended",
+  function () {
+    this.currentTime = 0;
+    this.play();
+  },
+  false
+);
 
 function onloaded() {
   main.innerHTML = `
@@ -410,9 +414,9 @@ function onloaded() {
         if (index === random) {
           if (document.querySelector(".game__apple")) {
             appleElement = document.querySelector(".game__apple").classList;
-            if (appleElement){
-              appleElement.add(`${effect.name}`)
-            };
+            if (appleElement) {
+              appleElement.add(`${effect.name}`);
+            }
           }
         }
       });
