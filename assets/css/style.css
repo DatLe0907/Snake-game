@@ -27,7 +27,7 @@ body {
   justify-content: center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-origin: center;
+  background-position: center;
 }
 
 .background {
@@ -207,7 +207,7 @@ body {
 .control {
   display: none;
   width: 80vmin;
-  height: 20vmin;
+  height: 30vmin;
   position: relative;
   margin-top: 20px;
   z-index: 5;
@@ -215,7 +215,7 @@ body {
 .control button {
   position: absolute;
   background-color: transparent;
-  padding: 12px 14px;
+  padding: 5vw;
   cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-pointer-32x32.png),
     pointer !important;
   border: solid 1px #fff;
@@ -275,8 +275,7 @@ body {
 
 .modal__content {
   margin-top: -25px;
-  min-width: 400px;
-  max-width: 500px;
+  min-width: 500px;
   height: 80vh;
   padding: 10px 50px;
   position: absolute;
@@ -369,11 +368,15 @@ body {
 
 /* Mobile */
 @media (max-width: 484px) {
-  .main {
+  #main {
     justify-content: flex-start;
   }
   .modal__content {
     top: 10%;
+  }
+
+  .box__detail h4 {
+    font-size: 3.5vw;
   }
   .snake-box {
     width: 100vw;
@@ -405,10 +408,10 @@ body {
   }
 
   .control button.left {
-    left: 10%;
+    left: 25%;
   }
   .control button.right {
-    right: 10%;
+    right: 25%;
   }
   .footer {
     font-size: 0.5rem;

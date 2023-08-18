@@ -1,3 +1,4 @@
+
 const main = document.getElementById("main");
 const themeSong = new Audio("./assets/audio/themesong.mp3");
 
@@ -206,9 +207,7 @@ function startGame() {
     }
   }
 
-  let startedScore = 0;
-  startedScore = btoa(startedScore.toString());
-  let highScore = localStorage.getItem("high-score") || startedScore;
+  let highScore = localStorage.getItem("high-score") ?? "MA==";
   highScore = Number(atob(highScore));
   highScoreElement.innerText = `High Score: ${highScore}`;
   highScoreModal.innerText = `High Score: ${highScore}`;
@@ -520,6 +519,6 @@ function startGame() {
       document.removeEventListener("keydown", handleKeyPress);
       document.addEventListener("keydown", handleKeyPress);
     }
+    return gameOver = false;
   };
-  return (gameOver = false);
 }
