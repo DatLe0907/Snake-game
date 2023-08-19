@@ -131,7 +131,7 @@ body {
   background-size: cover;
   object-fit: cover;
   background-repeat: repeat;
-  box-shadow: 0 0 30px red inset;
+  box-shadow: 0 0 40px red inset;
   overflow: hidden;
 }
 
@@ -358,6 +358,10 @@ body {
     margin-bottom: auto;
   }
 
+  .control button {
+    padding: 3vw;
+  }
+
   .control button.left {
     left: 10%;
   }
@@ -369,8 +373,18 @@ body {
 /* Mobile */
 @media (max-width: 484px) {
   #main {
+    width: 100vw;
+    height: 100vh;
     justify-content: flex-start;
   }
+
+  .start__button {
+    padding: 5% 10%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-100%);
+  }
+
   .modal__content {
     top: 10%;
   }

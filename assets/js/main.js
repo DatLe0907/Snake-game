@@ -1,12 +1,20 @@
-
 const main = document.getElementById("main");
-const themeSong = new Audio("./assets/audio/themesong.mp3");
+const audio = {
+  themeSong: new Audio("./assets/audio/themesong.mp3"),
+  audioEatingApple: new Audio("./assets/audio/biting-into-an-apple.mp3"),
+  audioGold: new Audio("./assets/audio/gold.mp3"),
+  audioSlow: new Audio("./assets/audio/slow.mp3"),
+  audioInvincibleStart: new Audio("./assets/audio/invincible-start.mp3"),
+  audioInvincibleRun: new Audio("./assets/audio/invincible-run.mp3"),
+  audioHurt: new Audio("./assets/audio/umph.mp3"),
+  audioBurn: new Audio("./assets/audio/fire.mp3")
+}
 
 // Nhấn vào start btn -> chạy nhạc và bắt đầu chạy game
 let startButton = document.querySelector(".start__button");
 
 function handleStartButtonClick() {
-  themeSong.play();
+  audio.themeSong.play();
   startGame();
 
   // Remove event listener for "Enter" key
@@ -15,7 +23,7 @@ function handleStartButtonClick() {
 
 function handleKeyDown(e) {
   if (e.key === "Enter") {
-    themeSong.play();
+    audio.themeSong.play();
     startGame();
     document.removeEventListener("keydown", handleKeyDown);
   }
@@ -27,7 +35,7 @@ if (startButton !== null) {
 }
 
 // khi nhạc kết thúc -> restart
-themeSong.addEventListener(
+audio.themeSong.addEventListener(
   "ended",
   function () {
     this.currentTime = 0;
@@ -101,14 +109,6 @@ function startGame() {
   const replayBtn = document.querySelector(".modal__content button");
   const controlBtn = document.querySelectorAll(".control button");
 
-  // audio
-  const audioEatingApple = new Audio("./assets/audio/biting-into-an-apple.mp3");
-  const audioGold = new Audio("./assets/audio/gold.mp3");
-  const audioSlow = new Audio("./assets/audio/slow.mp3");
-  const audioInvincibleStart = new Audio("./assets/audio/invincible-start.mp3");
-  const audioInvincibleRun = new Audio("./assets/audio/invincible-run.mp3");
-  const audioHurt = new Audio("./assets/audio/umph.mp3");
-
   let snakeX = 15;
   let snakeY = 15;
   let foodX = Math.floor(Math.random() * 30 + 1);
@@ -128,6 +128,8 @@ function startGame() {
   let speedEffect = originSpeed;
   let through = false;
   let flagEffect = false;
+
+  let randomAll,randomNoTime;
 
   let modal = document.querySelector(".modal");
 
@@ -282,7 +284,7 @@ function startGame() {
                   (flagEffect = false),
                   timeEffect,
                   (through = false),
-                  (timeOutId = setTimeout(function () {
+                  (setTimeout(function () {
                     effectTimeDisplayList[index].innerText = "";
                   }, 500)),
                   clearInterval(intervalItem)
@@ -332,26 +334,26 @@ function startGame() {
       // check class để xác định effect, tùy từng effect sẽ phát ra các âm thanh khác nhau
       switch (document.querySelector(".game__apple").classList[1]) {
         case "normal":
-          audioEatingApple.play();
+          audio.audioEatingApple.play();
           break;
         case "gold":
-          audioEatingApple.play();
-          audioGold.play();
+          audio.audioEatingApple.play();
+          audio.audioGold.play();
           break;
         case "slow":
-          audioEatingApple.play();
-          audioSlow.play();
+          audio.audioEatingApple.play();
+          audio.audioSlow.play();
           break;
         case "invincible":
-          audioEatingApple.play();
-          audioInvincibleStart.play();
+          audio.audioEatingApple.play();
+          audio.audioInvincibleStart.play();
           setTimeout(function () {
-            audioInvincibleRun.play();
+            audio.audioInvincibleRun.play();
           }, 700);
 
           break;
         default:
-          audioEatingApple.play();
+          audio.audioEatingApple.play();
           break;
       }
       // nếu đang có hiệu ứng thì sẽ áp dụng hiệu ứng không giới hạn thời gian, ngược lại thì áp dụng tất cả các hiệu ứng
@@ -395,7 +397,7 @@ function startGame() {
         snakeBody[0][0] === snakeBody[i][0]
       ) {
         if (through === false) {
-          audioHurt.play();
+          audio.audioHurt.play();
           gameOver = true;
         }
       }
@@ -405,7 +407,7 @@ function startGame() {
     rockList.forEach(function (rock) {
       if (snakeX === rock[0] && snakeY === rock[1]) {
         if (through === false) {
-          audioHurt.play();
+          audio.audioHurt.play();
           gameOver = true;
         }
       }
@@ -414,7 +416,7 @@ function startGame() {
     //   nếu rắn đụng vào tường thì game over,nếu through = true thì k sao
     if (snakeX < 0.75 || snakeX > 30.75 || snakeY < 0.75 || snakeY > 30.75) {
       if (through === false) {
-        audioHurt.play();
+        audio.audioBurn.play();
         gameOver = true;
       } else {
         // nếu con rắn ra khỏi map-> teleport
@@ -519,6 +521,6 @@ function startGame() {
       document.removeEventListener("keydown", handleKeyPress);
       document.addEventListener("keydown", handleKeyPress);
     }
-    return gameOver = false;
+    gameOver = false;
   };
 }
