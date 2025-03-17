@@ -9,16 +9,11 @@
   box-sizing: border-box;
 }
 
-:root {
-  --primary-color: #228b22;
-}
-
 html {
   font-size: 62.5%;
   font-family: "Minecraftia", sans-serif;
   color: #fff;
-  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-cursor-1-32x32.png),
-    default !important;
+  background-color: #000;
 }
 
 body {
@@ -34,7 +29,7 @@ body {
   position: fixed;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0);
 }
 
 #music {
@@ -47,14 +42,12 @@ body {
 .start__button {
   padding: 20% 100%;
   color: #fff;
-  background-color: var(--primary-color);
+  background-color: rgba(138, 43, 226, 0.8);
   border-radius: 5px;
   font-size: 2.4rem;
   font-weight: 500;
   border: none;
   outline: none;
-  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-pointer-32x32.png),
-    pointer !important;
 }
 
 .start__button:hover {
@@ -80,11 +73,23 @@ body {
   justify-content: center;
   border-radius: 5px;
   box-shadow: 0 20px 40px rgba(52, 87, 220, 0.2);
-  background-image: url("../img/block/dirt.jpg");
+  background-color: #000;
+  border: 2px solid rgba(138, 43, 226, 0.8);
+  border-radius: 10px;
   background-size: contain;
   z-index: 5;
-  cursor: url(https://sweezy-cursors.com/wp-content/uploads/cursor/green-snake-animated/green-snake-animated-cursor-1-32x32.png),
-    default !important;
+}
+
+@keyframes laser-border {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .wrapper {
@@ -95,15 +100,28 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url("../img/block/magma.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  
+  /* Hiệu ứng laser */
+  position: relative;
+  border: 3px solid transparent;
+  background-image: linear-gradient(90deg, transparent, transparent), 
+                    linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
+  background-size: 300% 100%;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  animation: laser-border 3s linear infinite;
 }
 
+
+
 .box__detail {
-  background-image: url(../img/block/wood.png);
-  background-size: contain;
+  background: linear-gradient(90deg, rgba(138, 43, 226, 0.2), rgba(138, 43, 226, 0.6), rgba(138, 43, 226, 0.2));
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.8), 0 0 30px rgba(138, 43, 226, 0.5);
+  border: 2px solid rgba(138, 43, 226, 0.8);
+  border-radius: 10px;
   width: 100%;
   height: 12%;
   padding: 0 3%;
@@ -113,6 +131,8 @@ body {
   font-size: 1.2rem;
   display: flex;
   justify-content: space-between;
+  text-shadow: 0 0 8px rgba(138, 43, 226, 0.8);
+  background-color: #000;
 }
 
 .box__detail h4 {
@@ -127,22 +147,24 @@ body {
   height: 100%;
   display: grid;
   grid-template: repeat(30, 1fr) / repeat(30, 1fr);
-  background-image: url("../img/block/grass.png");
   background-size: cover;
   object-fit: cover;
   background-repeat: repeat;
-  box-shadow: 0 0 40px red inset;
+  box-shadow: 0 0 40px rgba(0, 255, 255, 0.6) inset;
   overflow: hidden;
+  background-color: #000;
 }
 
 .rock {
-  background-image: url("../img/block/bedrock.jpeg");
-  background-repeat: none;
-  background-size: cover;
-  box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px,
-    rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
-    rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+  background-color: #57C70E;
+  border: 3px solid #57C70E;
+  box-shadow: 
+    0 0 10px #57C70E,
+    0 0 2cap #57C70E,
+    0 0 30px #57C70E;
   z-index: 3;
+  border-radius: 10%;
+  transition: transform 0.1s ease-in-out;
 }
 
 .game__apple {
@@ -151,57 +173,52 @@ body {
   justify-content: center;
   align-items: center;
   object-fit: cover;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: #000;
   border-radius: 50%;
   z-index: 2;
 }
 
 .apple {
   position: absolute;
-  top: -30%;
-  left: -20%;
-  width: 150%;
-  height: 150%;
-  background-image: url("../img/apple/normal-apple.png");
+  width: 100%;
+  height: 100%;
   filter: brightness(120%);
-  background-repeat: none;
-  background-size: cover;
-  object-fit: cover;
   z-index: 1;
-  background-color: rgba(10, 10, 10, 0.2);
-  box-shadow: 0 0 8px #333;
+  background-color: red;
+  box-shadow: 0 0 10px rgba(251, 251, 249, 0.6), 
+              0 0 20px rgba(220, 220, 210, 0.4);
 }
 
 .game__apple.gold .apple {
-  background-image: url("../img/apple/gold-apple.png");
+  background-color: #DBCA78;
+  box-shadow: 0 0 10px rgba(219, 202, 120, 0.6), 
+  0 0 20px rgba(219, 202, 120, 0.4);
 }
 
 .game__apple.slow .apple {
-  background-image: url("../img/apple/slower-apple.png");
+  background-color: #008DFF;
+  box-shadow: 0 0 10px rgba(0, 141, 255, 0.6), 
+  0 0 20px rgba(0, 141, 255, 0.4);
 }
 
 .game__apple.invincible .apple {
-  top: -20%;
-  width: 130%;
-  height: 130%;
-  background-image: url("../img/apple/invincible-apple-unscreen.gif");
-  background-position: left;
-  background-size: cover;
-  margin-left: -2px;
+  background-color: #C408FF;
+  box-shadow: 0 0 10px rgba(196, 8, 255, 0.6), 
+  0 0 20px rgba(196, 8, 255, 0.4);
 }
 
 .game__snake {
   transition: 0.4s;
-  background-image: url("../img/snake/snake-skin.jpeg");
   filter: brightness(120%);
   z-index: 4;
-  box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px,
-    rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
-    rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+  background-color: #FBFBF9;
+  box-shadow: 
+    0 0 15px rgba(251, 251, 249, 0.6),  /* Phát sáng nhẹ với màu gần nền */
+    0 0 30px rgba(200, 200, 180, 0.4); /* Hiệu ứng mờ dịu hơn */
 }
 
 .game__snake:last-child {
-  filter: brightness(50%);
+  filter: brightness(80%);
 }
 
 .control {
@@ -284,9 +301,9 @@ body {
   justify-content: space-between;
   transform-origin: center;
   animation: modalGrow 0.5s linear;
-  background-image: url("../img/modal/old-paper.png");
-  background-size: cover;
-  background-repeat: no-repeat;
+  border: 2px solid rgba(138, 43, 226, 0.8);
+  background-color: #000;
+  border-radius: 10px;
 }
 
 .modal__content button {
@@ -295,10 +312,7 @@ body {
   font-weight: 500;
   font-family: "Minecraftia";
   color: #fff;
-  background-image: url("../img/modal/button.png");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  background-color: rgba(138, 43, 226, 0.8);
   border: 1px solid #000;
   border-radius: 10px;
   box-shadow: 5px 5px 0 #000;
@@ -432,3 +446,4 @@ body {
     position: absolute;
   }
 }
+

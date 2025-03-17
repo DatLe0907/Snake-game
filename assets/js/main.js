@@ -7,11 +7,16 @@ const audio = {
   audioInvincibleStart: new Audio("./assets/audio/invincible-start.mp3"),
   audioInvincibleRun: new Audio("./assets/audio/invincible-run.mp3"),
   audioHurt: new Audio("./assets/audio/umph.mp3"),
-  audioBurn: new Audio("./assets/audio/fire.mp3")
+  audioBurn: new Audio("./assets/audio/electricity.mp3")
 }
 
 // Nhấn vào start btn -> chạy nhạc và bắt đầu chạy game
 let startButton = document.querySelector(".start__button");
+
+function updateScore(score) {
+  window.parent.postMessage({ type: "SNAKE_SCORE", score }, "*");
+}
+
 
 function handleStartButtonClick() {
   audio.themeSong.play();
@@ -53,11 +58,11 @@ function startGame() {
     <div class="modal__overlay"></div>
     <div class="modal__content">
       <div class="content">
-        <img src="./assets/img/modal/trophy.jpeg" alt="" />
+        <img src="./assets/img/modal/trophy.png" alt="" />
         <h4 class="high-score"></h4>
       </div>
       <div class="content">
-        <img src="./assets/img/modal/star.jpg" alt="" />
+        <img src="./assets/img/modal/star.png" alt="" />
         <h4 class="score">Score: 0</h4>
       </div>
       <button>Play Again</button>
@@ -98,8 +103,6 @@ function startGame() {
   </div>
   `;
 
-  // sau khi ấn start game thay đổi background
-  document.body.style.backgroundImage = 'url("./assets/img/block/jungle.jpg")';
 
   const boxGame = document.querySelector(".box__game");
   const scoreElement = document.querySelector(".heading__current-score");
@@ -124,7 +127,7 @@ function startGame() {
   let gameOver = false;
   let score = 0;
 
-  let originSpeed = 70;
+  let originSpeed = 100;
   let speedEffect = originSpeed;
   let through = false;
   let flagEffect = false;
@@ -334,18 +337,17 @@ function startGame() {
       // check class để xác định effect, tùy từng effect sẽ phát ra các âm thanh khác nhau
       switch (document.querySelector(".game__apple").classList[1]) {
         case "normal":
-          audio.audioEatingApple.play();
+          audio.audioGold.play();
           break;
         case "gold":
-          audio.audioEatingApple.play();
           audio.audioGold.play();
           break;
         case "slow":
-          audio.audioEatingApple.play();
+          audio.audioGold.play();
           audio.audioSlow.play();
           break;
         case "invincible":
-          audio.audioEatingApple.play();
+          audio.audioGold.play();
           audio.audioInvincibleStart.play();
           setTimeout(function () {
             audio.audioInvincibleRun.play();
@@ -399,6 +401,7 @@ function startGame() {
         if (through === false) {
           audio.audioHurt.play();
           gameOver = true;
+          updateScore(score);
         }
       }
     }
@@ -409,6 +412,7 @@ function startGame() {
         if (through === false) {
           audio.audioHurt.play();
           gameOver = true;
+          updateScore(score);
         }
       }
     });
@@ -418,6 +422,7 @@ function startGame() {
       if (through === false) {
         audio.audioBurn.play();
         gameOver = true;
+        updateScore(score);
       } else {
         // nếu con rắn ra khỏi map-> teleport
         if (snakeX === 0) {
